@@ -217,11 +217,33 @@
     " Basics {
         colorscheme purplehaze
         set columns=180 " perfect size for me
-        set guifont=Monospace " My favorite font
-        set guioptions=ce
-        "              ||
-        "              |+-- use simple dialogs rather than pop-ups
-        "              +-- use GUI tabs, not console style tabs
+        
+        if has('gui_gtk2')
+            set guifont=Consolas\ 12,Monospace\ 10 " my favorite font
+        elseif has('gui_photon') 
+            set guifont=Consolas:s12,DejaVu\ Sans\ Monospace:s11 
+        elseif has('gui_kde') 
+            " the obsolete kvim 
+            " just make sure it works correctly if it hits our vimrc 
+            set guifont=DejaVu\ Sans\ Mono/12/-1/5/50/0/0/0/1/0 
+        elseif has('x11') 
+            " I'm guessing the following (other-X11 including GTK1) 
+            " please check, and correct if necessary. 
+            " On GTK1 (and maybe some others) you can use :set guifont=* 
+            " Replace by asterisks like here 
+            " to make it a little more general: 
+            set guifont=-*-dejavu-medium-r-normal-*-*-110-*-*-m-*-* 
+            " add another elseif here 
+            " if you want DejaVu on mac-without-x11 
+        else 
+            " not x11 (probably Windows) 
+            set guifont=Consolas:h12:cDEFAULT 
+        endif
+        set guioptions=mce
+        "              |||
+        "              ||+-- use simple dialogs rather than pop-ups
+        "              |+-- use GUI tabs, not console style tabs
+        "              +-- use toolbar
         set lines=45 " perfect size for me
         set mousehide " hide the mouse cursor when typing
     " }
