@@ -19,9 +19,9 @@
     filetype plugin on " load filetype plugins
     set noerrorbells " don't make noise
     set backup " make backup files
-    set backupdir=~/vimfiles/backup " where to put backup files
+    set backupdir=~/backup " where to put backup files
     set clipboard+=unnamed " share windows clipboard
-    set directory=~/vimfiles/tmp " directory to place swap files in
+    set directory=~/tmp " directory to place swap files in
     set hidden " you can change buffers without saving
     " (XXX: #VIM/tpope warns the line below could break things)
     "set whichwrap=b,s,h,l,<,>,~,[,] " everything wraps
@@ -217,7 +217,7 @@
     " Basics {
         colorscheme purplehaze
         set columns=180 " perfect size for me
-        set guifont=Consolas:h12 " My favorite font
+        set guifont=Monospace " My favorite font
         set guioptions=ce
         "              ||
         "              |+-- use simple dialogs rather than pop-ups

@@ -1,8 +1,0 @@
-
-from am_protocol_data import data
-
-formated = open("formated.txt", "w")
-for (key,value) in data:
-    formated.write("name: %s\tval: %f\n" % (key,value))
-
-formated.close()
