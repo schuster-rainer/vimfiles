@@ -1,0 +1,24 @@
+(ns test-namespace)
+
+(defstruct complex :real :imag)
+
+(defn add
+  "Complex addition"
+  [ c1 c2 ] 
+   (struct complex 
+          (+ (:real c1) (:real c2))
+          (+ (:imag c1) (:imag c2))))
+
+(defn multiply
+  "Complex Multipication"
+  [ c1 c2 ] 
+  (struct complex 
+          (- (* (:real c1) (:real c2)) (* (:imag c1) (:imag c2)))
+          (+ (* (:real c1) (:imag c2)) (* (:imag c1) (:real c2)))))
+
+(defn abs
+  "Complex Absulute Value"
+  [ complex ]
+  (Math/sqrt 
+   (+ (* (:real complex) (:real complex) ) 
+      (* (:imag complex) (:imag complex)))))

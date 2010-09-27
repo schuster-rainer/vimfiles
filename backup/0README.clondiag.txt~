@@ -1,0 +1,15 @@
+WAS:  	  Microsoft Visual Studio 2010 Shell + Programmiersprachen (Tools)
+DATE: 	  2010-08-26
+CREATOR:  Rainer
+USERS:	  
+URL:	  http://www.microsoft.com/downloads/details.aspx?FamilyId=40646580-97FA-4698-B65F-620D4B4B1ED7&displaylang=en 
+NOTES:    Visual Studio Shell die Basisfunktionen liefert (ohne Programmiersprache). Kann als Anwedungsgerüst genutzt werden für neue Programmiersprachen oder eigene Entwicklungs-Anwendungen (z.B. IconoClust )
+SeeAlso:
+
+F# für .NET 2.0, 4.0, Mono und andere CLI Implementierungen: 
+http://blogs.msdn.com/b/dsyme/archive/2010/08/17/announcing-the-f-2-0-free-tools-for-net-4-0.aspx
+F# PowerPack (unter anderem Lex und Yacc Unterstützung):
+http://fsharppowerpack.codeplex.com/
+
+IronPython Tools: Plugin für IronPython Implementierung in die VS2010 Shell
+http://www.ironpython.net/tools/

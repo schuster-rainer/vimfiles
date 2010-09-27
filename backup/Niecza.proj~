@@ -1,0 +1,106 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003"
+    ToolsVersion="2.0">
+    <UsingTask TaskName="Perl" AssemblyFile="obj\PerlTask.dll"/>
+    <PropertyGroup>
+        <!-- Tool paths -->
+        <Subversion>svn</Subversion>
+        <Make>nmake</Make>
+        <Perl>perl</Perl>
+
+        <!-- Other centralized variables -->
+        <SpecTestUrl>http://svn.pugscode.org/pugs/t/spec</SpecTestUrl>
+        <UseAOT>Y</UseAOT>
+
+        <!-- infrastructure -->
+        <SpecTest_existed Condition="Exists('t/spec')">Y</SpecTest_existed>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <CompilerPerl Include="src\Body.pm;src\CClass.pm;src\CgOp.pm;src\CodeGen.pm;src\CompilerDriver.pm;src\Decl.pm;src\Op.pm;src\Optimizer\Beta.pm;src\ResolveLex.pm;src\RxOp.pm;src\Sig.pm;src\Unit.pm;src\Niecza\Actions.pm;src\Niecza\Grammar.pmc"/>
+    </ItemGroup>
+
+    <!-- Meta targets -->
+    <Target Name="Default" DependsOnTargets="CORE.dll;WriteVersion"/>
+
+    <Target Name="SafeMode" DependsOnTargets="SAFE.dll;WriteVersion"/>
+
+    <Target Name="Test" DependsOnTargets="CORE.dll;Test.dll;WriteVersion;PerlTask">
+        <Perl Code="compile(stopafter => 'writecs', file => 'test.pl');"/>
+        <Csc Sources="obj\MAIN.cs" TargetType="exe" AdditionalLibPaths="obj"
+            OutputAssembly="obj\MAIN.exe"
+            References="Test.dll;SAFE.dll;CORE.dll;Kernel.dll"/>
+        <Exec Command="prove -e mono obj/MAIN.exe"/>
+    </Target>
+
+    <Target Name="WriteVersion">
+        <Exec Command="git describe --always &gt; VERSION"/>
+    </Target>
+
+    <!-- Libraries -->
+    <Target Name="Kernel.dll" Inputs="lib\Kernel.cs;lib\Cursor.cs"
+        Outputs="obj\Kernel.dll">
+        <Csc Sources="lib\Kernel.cs;lib\Cursor.cs" TargetType="library"
+            OutputAssembly="obj\Kernel.dll"/>
+        <Exec Condition="$(UseAOT) == 'Y'" ContinueOnError="true"
+            Command="mono --aot obj\Kernel.dll"/>
+    </Target>
+
+    <Target Name="CORE.cs" Inputs="@(CompilerPerl);obj\SAFE.store;lib\CORE.setting" Outputs="obj\CORE.cs;obj\CORE.store" DependsOnTargets="SAFE.cs;Grammar;PerlTask">
+        <Perl Code="compile(stopafter => 'writecs', lang => 'SAFE', setting => 1, name => 'CORE');"/>
+    </Target>
+
+    <Target Name="SAFE.cs" Inputs="@(CompilerPerl);lib\SAFE.setting"
+        Outputs="obj\SAFE.cs;obj\SAFE.store"
+        DependsOnTargets="Grammar;PerlTask">
+        <Perl Code="compile(stopafter => 'writecs', lang => 'NULL', setting => 1, name => 'SAFE');"/>
+    </Target>
+
+    <Target Name="Test.cs" Inputs="@(CompilerPerl);obj\CORE.store;lib\Test.pm6"
+        Outputs="obj\Test.cs;obj\Test.store"
+        DependsOnTargets="CORE.cs;Grammar;PerlTask">
+        <Perl Code="compile(stopafter => 'writecs', name => 'Test');"/>
+    </Target>
+
+    <Target Name="CORE.dll" Inputs="obj\CORE.cs;obj\SAFE.dll;obj\Kernel.dll" Outputs="obj\CORE.dll" DependsOnTargets="CORE.cs;SAFE.dll;Kernel.dll">
+        <Csc Sources="obj\CORE.cs" TargetType="library"
+            AdditionalLibPaths="obj" OutputAssembly="obj\CORE.dll"
+            References="SAFE.dll;Kernel.dll"/>
+        <Exec Condition="$(UseAOT) == 'Y'" Command="mono --aot obj\CORE.dll"
+            ContinueOnError="true"/>
+    </Target>
+
+    <Target Name="SAFE.dll" Inputs="obj\SAFE.cs;obj\Kernel.dll"
+        Outputs="obj\SAFE.dll" DependsOnTargets="SAFE.cs;Kernel.dll">
+        <Csc Sources="obj\SAFE.cs" TargetType="library"
+            AdditionalLibPaths="obj" OutputAssembly="obj\SAFE.dll"
+            References="Kernel.dll"/>
+        <Exec Condition="$(UseAOT) == 'Y'" Command="mono --aot obj\SAFE.dll"
+            ContinueOnError="true"/>
+    </Target>
+
+    <Target Name="Test.dll" Inputs="obj\Test.cs;obj\CORE.dll;obj\Kernel.dll" Outputs="obj\Test.dll" DependsOnTargets="Test.cs;CORE.dll;Kernel.dll">
+        <Csc Sources="obj\Test.cs" TargetType="library"
+            AdditionalLibPaths="obj" OutputAssembly="obj\Test.dll"
+            References="CORE.dll;SAFE.dll;Kernel.dll"/>
+        <Exec Condition="$(UseAOT) == 'Y'" Command="mono --aot obj\Test.dll"
+            ContinueOnError="true"/>
+    </Target>
+
+    <!-- Proper compiler bits -->
+    <Target Name="Grammar" Inputs="src\Niecza\Grammar.pm6" Outputs="src\Niecza\Grammar.pmc">
+        <Exec Command="viv --noperl6lib -5 -o src/Niecza/Grammar.pmc src/Niecza/Grammar.pm6"/>
+    </Target>
+
+    <Target Name="CheckoutSpecTest">
+        <Exec Condition="$(SpecTest_existed) != 'Y'"
+            Command="$(Subversion) checkout $(SpecTestUrl) t/spec"/>
+        <Exec Condition="$(STD_existed) == 'Y'"
+            Command="$(Subversion) update t/spec"/>
+    </Target>
+
+    <Target Name="PerlTask" Inputs="PerlTask.cs" Outputs="obj\PerlTask.dll">
+        <Csc Sources="PerlTask.cs" TargetType="library"
+            OutputAssembly="obj\PerlTask.dll"
+            References="Microsoft.Build.Framework.dll;Microsoft.Build.Utilities.dll"/>
+    </Target>
+</Project>

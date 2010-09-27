@@ -1,0 +1,46 @@
+shortcut description
+d$      zeile loeschen
+d2w     delete two words
+.       repeat command
+y       copy selected
+yy      yank line (zeile kopieren)
+
+P       paste before cursor
+p       paste after cursor
+d       delete (cut)
+
+i       insert text before cursor
+a       append text after cursor
+6l      forward 6 letters
+fN      jump forward to the first N
+2j      down 2 lines
+3fN     jump forward to third 'N'
+
+w       forward one word
+3w      forward 3 words
+
+gg      move to the first line
+G       move to the end of document
+
+
+cw      changeword
+3cw     change 3 words
+u       undo
+CTRL+R  redo
+
+:w      write file
+:w!     write file without confirmation
+:q      quit
+:wq!    write and quit
+
+%s/search/replace/gc    %s = search
+                        g = global
+                        c = ask for confirmation on each match
+
+v       characterwise visual mode
+V       linewise visual mode
+
+:b name     switch to buffer (TAB and arrow files work too)
+
+:bp     previous buffer
+:bn     go to the next buffer

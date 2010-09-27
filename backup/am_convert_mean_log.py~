@@ -1,0 +1,8 @@
+
+from am_mean_data import data
+
+formated = open("am_formated.txt", "w")
+for (key,value) in data:
+    formated.write("name:%s val:%f\n" % (key,value))
+
+formated.close()

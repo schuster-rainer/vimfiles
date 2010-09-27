@@ -1,0 +1,5 @@
+# Rainer Schuster (http://github.com/schuster-rainer/posh-spice)
+
+Import-Module Pscx -DisableNameChecking
+$computer = get-content env:computername
+. "c:\shared\posh-spice\env.ps1" "c:\shared\" "rainer_s" $computer "c:\Projects\"

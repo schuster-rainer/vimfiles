@@ -1,0 +1,693 @@
+"""
+:module: PackageBuilder.py
+:summary: assay package builder tool
+:version: 0.2 20050706 qbi
+:         0.1 20031001 rogo
+:author:  rogo, Steffen Kube
+
+ INFO: !!! Encryption !!! is only to be used for DynaChip Antibody Screening (Pxx-Scr)
+       chips - it is not needed for any O chips or Pval chips.
+
+ Customer TTP: - Falls du auch packages f?r TTP bauen musst, brauchst du nur die
+                 Assays/StandardFiles/TTP.icrun
+                 mit dem layout zusammen zu packen.
+               - Mit "Save Template as..." speichern!
+"""
+
+
+import os
+import string
+from PackageBuiSubs import IconoPackager
+
+doit = 1
+
+if doit:
+
+	langset = { "050003.en" : { "type"  : "Wellcraft process",
+								"title" : "Dynal Protein 3",
+								"lang"  : "english",
+								"descr" : "" },
+									}
+
+	langset3 = { "050003.en" : { "type"  : "Wellcraft process",
+								"title" : "Dynal Protein 3",
+								"lang"  : "english",
+								"descr" : "" },
+								}
+	langset4 = { "050004.en" : { "type"  : "Wellcraft process",
+								"title" : "Dynal Protein 4",
+								"lang"  : "english",
+								"descr" : "" },
+								}
+	langset5 = { "050005.en" : { "type"  : "Wellcraft process",
+								"title" : "Dynal Protein P11B",
+								"lang"  : "english",
+								"descr" : "P11B chips" },
+								 }
+
+
+
+	langset_010079 = { "010079.en" : { "type"  : "image acquisition only",
+									"title" : "image acquisition",
+									"lang"  : "english",
+									"descr" : "just image acquisition"
+									  },
+		}
+
+
+
+
+	iniData = { "icrun.py" : "dynal01",
+				"icpck" : "init_5714"}
+
+
+
+	langset6 = { "050005.en" : { "type"  : "Wellcraft process",
+								"title" : "Dynal Protein Calc Simu",
+								"lang"  : "english",
+								"descr" : "P11B chips" },
+								 }
+	iniData6 = { "langset"  :  langset6,
+				 "icrun.py" : "dynal01",
+				 "icpck"    : "absarr.7459" # special layout 7459
+				}
+
+
+	langset7= { "030002.en" : { "type"  : "Wellcraft process",
+								"title" : "Dynal P10 v02",
+								"lang"  : "english",
+								"descr" : "P10 chips" },
+								 }
+
+	iniData5 = { "langset"  : langset5,
+				 "icrun.py" : "dynal01",
+				 "icpck" : "absarr.7459" # special layout 7459
+				}
+	iniData7 = { "langset"  :  langset7,
+				 "icrun.py" : "dynal01",
+				 "icpck"    : "absarr.7422"
+				}
+
+	iniData_010150 = {
+				"srcdir"   : "03.icpck.en",
+				"langset"  :  { "010150.en" : { "type"  : "Wellcraft process",
+								"title" : "Dynal ASP_WashTest",
+								"lang"  : "english",
+								"descr" : "ASP_WashTest" },
+								 },
+				"icrun.py" : "[STANDARD]\\noanalysis",
+				"icwet"    : "[STANDARD]\\CCT.Wash_060702_bottles (100ul) (all).icasp",
+				"icpck"    : "[STANDARD]\\absarr.7841.washtest",  # Washtest
+				"wetperiod"    : "120"
+				}
+	iniData_010079 = {
+				 "langset"    : langset_010079,
+				 "icstart.py" : "010079",
+				 "icpck"      : "010079",
+				 "DeviceType" : "ATS",
+				}
+
+	langset_030003= { "030003.en" : { "type"  : "Wellcraft process",
+								"title" : "Dynal P14",
+								"lang"  : "english",
+								"descr" : "P14 chips" },
+								 }
+	iniData_030003 = { "langset"  :  langset_030003,
+				 "icrun.py" : "030003",
+				 "icpck"    : "absarr.7584" # P14
+				}
+
+	iniData_030003 = {
+				"srcdir"   : "030003.icpck.en",
+				"langset"  :  { "030004.en" : { "type"  : "Wellcraft process",
+								"title" : "Dynal P15",
+								"lang"  : "english",
+								"descr" : "P15 chips  (with wetscript 20060724)" },
+								 },
+				"icrun.py" : "[STANDARD]\\030004.norefcheck",
+				"icwet"    : "[STANDARD]\\DynaScreen_060724_bottles (100ul) (all).icasp",
+				"icpck"    : "absarr.7699" # P15
+				}
+
+	iniData_030006 = {
+				"srcdir"   : "030003.icpck.en",
+				"langset"  :  { "030006.en" : { "type"  : "Wellcraft process",
+								"title" : "Dynal P16",
+								"lang"  : "english",
+								"descr" : "P16 chips (v: 20060814 pure protein remove)" },
+								 },
+				"icrun.py" : "[STANDARD]\\030004.norefcheck",
+				"icwet"    : "[STANDARD]\\DynaScreen_060724_bottles (100ul) (all).icasp",
+				"icpck"    : "absarr.7851.p16"  # P16
+				}
+
+	iniData_030010 = {
+				"srcdir"   : "030003.icpck.en",
+				"langset"  :  { "030010.en" : { "type"  : "Wellcraft process",
+								"title" : "Dynal P17",
+								"lang"  : "english",
+								"descr" : "P17 chips" },
+								 },
+				"icrun.py" : "[STANDARD]\\030004.norefcheck",
+				"icwet"    : "[STANDARD]\\DynaScreen_060724_bottles (100ul) (all).icasp",
+				"icpck"    : "[STANDARD]\\absarr.7925.p17"
+				}
+
+	iniData_030013 = {
+		"srcdir"   : "030003.icpck.en",
+		"langset"  :  { "030013.en" : {
+						"type"  : "Wellcraft process",
+						"title" : "Dynal O13",
+						"lang"  : "english",
+						"descr" : "O13 chips" },
+						 },
+		"icrun.py" : "[STANDARD]\\030004.norefcheck",
+		"icwet"    : "[STANDARD]\\DynaScreen_060724_bottles (100ul) (all).icasp",
+		"icpck"    : "[STANDARD]\\absarr.8055.O13"
+		}
+
+	iniData_030015 = {
+				"srcdir"   : "030003.icpck.en",
+				"langset"  :  { "030015.en" : {
+								"type"  : "Wellcraft process",
+								"title" : "Dynal P18_2",
+								"lang"  : "english",
+								"descr" : "P18_2 chips" },
+								 },
+				"icrun.py" : "[STANDARD]\\030004.norefcheck",
+				"icwet"    : "[STANDARD]\\DynaScreen_060724_bottles (100ul) (all).icasp",
+				"icpck"    : "[STANDARD]\\absarr.8086.p18_2"
+				}
+
+	iniData_030017 = {
+		"srcdir"   : "030003.icpck.en",
+		"langset"  :  { "030017.en" : {
+						"type"  : "Wellcraft process",
+						"title" : "Dynal P19",
+						"lang"  : "english",
+						"descr" : "P19 chips" },
+						 },
+		"icrun.py" : "[STANDARD]\\030004.norefcheck",
+		"icwet"    : "[STANDARD]\\DynaScreen_060724_bottles (100ul) (all).icasp",
+		"icpck"    : "[STANDARD]\\absarr.8141.p19"
+		}
+
+	iniData_030016 = {  #OLD: "icrun.py" : "030004.norefcheck",
+		"srcdir"   : "030003.icpck.en",
+		"langset"  :  { "030016.en" : {
+						"type"  : "Wellcraft process",
+						"title" : "Dynal O14",
+						"lang"  : "english",
+						"descr" : "O14 chips" },
+						 },
+		"icrun.py" : "[STANDARD]\\autochrome070502",
+		"icwet"    : "[STANDARD]\\DynaScreen_060724_bottles (100ul) (all).icasp",
+		"icpck"    : "[STANDARD]\\absarr.8116.o14"
+		}
+
+	iniData_030019 = {
+		"srcdir"   : "030003.icpck.en",
+		"langset"  :  { "030019.en" : {
+						"type"  : "Wellcraft process",
+						"title" : "Dynal PVal8_2",
+						"lang"  : "english",
+						"descr" : "PVal8_2 chips" },
+						 },
+		"icrun.py" : "[STANDARD]\\030004.norefcheck",
+		"icwet"    : "[STANDARD]\\DynaScreen_060724_bottles (100ul) (all).icasp",
+		"icpck"    : "[STANDARD]\\absarr.8176.PVal8_2"
+		}
+
+	iniData_030020 = {
+		"srcdir"   : "030003.icpck.en",
+		"langset"  :  { "030020.en" : {
+						"type"  : "Wellcraft process",
+						"title" : "Dynal O15",
+						"lang"  : "english",
+						"descr" : "O15 chips" },
+						 },
+		"icrun.py" : "[STANDARD]\\autochrome070502",
+		"icwet"    : "[STANDARD]\\DynaScreen_060724_bottles (100ul) (all).icasp",
+		"icpck"    : "[STANDARD]\\absarr.8250.o15"
+		}
+
+	iniData_030029 = {
+		"srcdir"   : "030003.icpck.en",
+		"langset"  :  { "030029.en" : {
+						"type"  : "Wellcraft process",
+						"title" : "Dynal P20",
+						"lang"  : "english",
+						"descr" : "P20 chips" },
+						 },
+		"icrun.py" : "[STANDARD]\\030004.norefcheck",
+		"icwet"    : "[STANDARD]\\DynaScreen_060724_bottles (100ul) (all).icasp",
+		"icpck"    : "[STANDARD]\\absarr.8358.P20"
+		}
+
+	iniData_030031 = {
+		"srcdir"   : "030003.icpck.en",
+		"langset"  :  { "030031.en" : {
+						"type"  : "Wellcraft process",
+						"title" : "Dynal O16",
+						"lang"  : "english",
+						"descr" : "O16 chips" },
+						 },
+		"icrun.py" : "[STANDARD]\\autochrome070502",
+		"icwet"    : "[STANDARD]\\DynaScreen_060724_bottles (100ul) (all).icasp",
+		"icpck"    : "[STANDARD]\\absarr.8387.o16"
+		}
+
+	iniData_030030 = {
+		"srcdir"   : "030003.icpck.en",
+		"langset"  :  { "030030.en" : {
+						"type"  : "Wellcraft process",
+						"title" : "Dynal P20_MM",
+						"lang"  : "english",
+						"descr" : "P20_MM chips" },
+						 },
+		"icrun.py" : "[STANDARD]\\DynaScreen_2008-03-14.nocrypt",
+		"icwet"    : "[STANDARD]\\DynaScreen_060724_bottles (100ul) (all).icasp",
+		"icpck"    : "[STANDARD]\\absarr.8365.P20_MM",
+		"icstart.py" : "[STANDARD]\\20080314",  # new icstart-file (no xpath)
+		}
+
+	iniData_030034 = {
+		"srcdir"   : "030003.icpck.en",
+		"langset"  :  { "030034.en" : {
+						"type"  : "Wellcraft process",
+						"title" : "Dynal P20_Scr_MM",
+						"lang"  : "english",
+						"descr" : "P20_Scr_MM chips" },
+						 },
+		"icrun.py" : "[STANDARD]\\DynaScreen_2008-03-14.crypt",
+		"icwet"    : "[STANDARD]\\DynaScreen_060724_bottles (100ul) (all).icasp",
+		"icpck"    : "[STANDARD]\\absarr.8454.P20_Scr_MM",
+		"icstart.py" : "[STANDARD]\\20080314",  # new icstart-file (no xpath)
+		}
+
+	iniData_030041 = {
+		"srcdir"   : "030003.icpck.en",
+		"langset"  :  { "030041.en" : {
+						"type"  : "Wellcraft process",
+						"title" : "Dynal_PVal11",
+						"lang"  : "english",
+						"descr" : "Dynal_PVal11 chips" },
+						 },
+		"icrun.py" : "[STANDARD]\\DynaScreen_2008-03-14.crypt",
+		"icwet"    : "[STANDARD]\\DynaScreen_060724_bottles (100ul) (all).icasp",
+		"icpck"    : "[STANDARD]\\absarr.8637.PVal11",
+		"icstart.py" : "[STANDARD]\\20080314",  # new icstart-file (no xpath)
+		}
+
+	iniData_030042 = {
+		"srcdir"   : "030003.icpck.en",
+		"langset"  :  { "030042.en" : {
+						"type"  : "Wellcraft process",
+						"title" : "Dynal_O22",
+						"lang"  : "english",
+						"descr" : "Dynal_O22 chips" },
+						 },
+		"icrun.py" : "[STANDARD]\\DynaScreen_2008-03-14.nocrypt",
+		"icwet"    : "[STANDARD]\\DynaScreen_060724_bottles (100ul) (all).icasp",
+		"icpck"    : "[STANDARD]\\absarr.8652.O22",
+		"icstart.py" : "[STANDARD]\\20080314",  # new icstart-file (no xpath)
+		}
+
+	iniData_030043 = {
+		"srcdir"   : "030003.icpck.en",
+		"langset"  :  { "030043.en" : {
+						"type"  : "Wellcraft process",
+						"title" : "Dynal_O23",
+						"lang"  : "english",
+						"descr" : "Dynal_O23 chips" },
+						 },
+		"icrun.py" : "[STANDARD]\\DynaScreen_2008-03-14.nocrypt",
+		"icwet"    : "[STANDARD]\\DynaScreen_060724_bottles (100ul) (all).icasp",
+		"icpck"    : "[STANDARD]\\absarr.8656.O23",
+		"icstart.py" : "[STANDARD]\\20080314",  # new icstart-file (no xpath)
+		}
+
+	iniData_030044 = {
+		"srcdir"   : "030003.icpck.en",
+		"langset"  :  { "030044.en" : {
+						"type"  : "Wellcraft process",
+						"title" : "Dynal_O24",
+						"lang"  : "english",
+						"descr" : "Dynal_O24 chips" },
+						 },
+		"icrun.py" : "[STANDARD]\\DynaScreen_2008-03-14.nocrypt",
+		"icwet"    : "[STANDARD]\\DynaScreen_060724_bottles (100ul) (all).icasp",
+		"icpck"    : "[STANDARD]\\absarr.8658.O24",
+		"icstart.py" : "[STANDARD]\\20080314",  # new icstart-file (no xpath)
+		}
+
+	iniData_030045 = {
+		"srcdir"   : "030003.icpck.en",
+		"langset"  :  { "030045.en" : {
+						"type"  : "Wellcraft process",
+						"title" : "Dynal_O25",
+						"lang"  : "english",
+						"descr" : "Dynal_O25 chips" },
+						 },
+		"icrun.py" : "[STANDARD]\\DynaScreen_2008-03-14.nocrypt",
+		"icwet"    : "[STANDARD]\\DynaScreen_060724_bottles (100ul) (all).icasp",
+		"icpck"    : "[STANDARD]\\absarr.8661.O25",
+		"icstart.py" : "[STANDARD]\\20080314",  # new icstart-file (no xpath)
+		}
+
+	iniData_030046 = {
+		"srcdir"   : "030003.icpck.en",
+		"langset"  :  { "030046.en" : {
+						"type"  : "Wellcraft process",
+						"title" : "Dynal_O26",
+						"lang"  : "english",
+						"descr" : "Dynal_O26 chips" },
+						 },
+		"icrun.py" : "[STANDARD]\\DynaScreen_2008-03-14.nocrypt",
+		"icwet"    : "[STANDARD]\\DynaScreen_060724_bottles (100ul) (all).icasp",
+		"icpck"    : "[STANDARD]\\absarr.8662.O26",
+		"icstart.py" : "[STANDARD]\\20080314",  # new icstart-file (no xpath)
+		}
+
+	iniData_030040 = {
+		"srcdir"   : "030003.icpck.en",
+		"langset"  :  { "030040.en" : {
+						"type"  : "Wellcraft process",
+						"title" : "Dynal_P21",
+						"lang"  : "english",
+						"descr" : "Dynal_P21 chips" },
+						 },
+		"icrun.py" : "[STANDARD]\\DynaScreen_2008-03-14.nocrypt",
+		"icwet"    : "[STANDARD]\\DynaScreen_060724_bottles (100ul) (all).icasp",
+		"icpck"    : "[STANDARD]\\absarr.8597.P21",
+		"icstart.py" : "[STANDARD]\\20080314",  # new icstart-file (no xpath)
+		}
+
+	iniData_030047 = {
+		"srcdir"   : "030003.icpck.en",
+		"langset"  :  { "030047.en" : {
+						"type"  : "Wellcraft process",
+						"title" : "Dynal P21_Scr",
+						"lang"  : "english",
+						"descr" : "P21_Scr chips" },
+						 },
+		"icrun.py" : "[STANDARD]\\DynaScreen_2008-03-14.crypt",
+		"icwet"    : "[STANDARD]\\DynaScreen_060724_bottles (100ul) (all).icasp",
+		"icpck"    : "[STANDARD]\\absarr.8664.P21_scr",
+		"icstart.py" : "[STANDARD]\\20080314",  # new icstart-file (no xpath)
+		}
+
+	iniData_030048 = {
+		"srcdir"   : "030003.icpck.en",
+		"langset"  :  { "030048.en" : {
+						"type"  : "Wellcraft process",
+						"title" : "Dynal_O27",
+						"lang"  : "english",
+						"descr" : "Dynal_O27 chips" },
+						 },
+		"icrun.py" : "[STANDARD]\\DynaScreen_2008-03-14.nocrypt",
+		"icwet"    : "[STANDARD]\\DynaScreen_060724_bottles (100ul) (all).icasp",
+		"icpck"    : "[STANDARD]\\absarr.8686.O27",
+		"icstart.py" : "[STANDARD]\\20080314",  # new icstart-file (no xpath)
+		}
+
+	iniData_030049 = {
+		"srcdir"   : "030003.icpck.en",
+		"langset"  :  { "030049.en" : {
+						"type"  : "Wellcraft process",
+						"title" : "Dynal_O25_2",
+						"lang"  : "english",
+						"descr" : "Dynal_O25_2 chips" },
+						 },
+		"icrun.py" : "[STANDARD]\\DynaScreen_2008-03-14.nocrypt",
+		"icwet"    : "[STANDARD]\\DynaScreen_060724_bottles (100ul) (all).icasp",
+		"icpck"    : "[STANDARD]\\absarr.8731.O25_2",
+		"icstart.py" : "[STANDARD]\\20080314",  # new icstart-file (no xpath)
+		}
+
+	iniData_030050 = {
+		"srcdir"   : "030003.icpck.en",
+		"langset"  :  { "030050.en" : {
+						"type"  : "Wellcraft process",
+						"title" : "Dynal_PV12",
+						"lang"  : "english",
+						"descr" : "Dynal_PV12 chips" },
+						 },
+		"icrun.py" : "[STANDARD]\\DynaScreen_2008-03-14.nocrypt",
+		"icwet"    : "[STANDARD]\\DynaScreen_060724_bottles (100ul) (all).icasp",
+		"icpck"    : "[STANDARD]\\absarr.8732.PVal12",
+		"icstart.py" : "[STANDARD]\\20080314",  # new icstart-file (no xpath)
+		}
+
+	iniData_030057 = {
+		"srcdir"   : "030003.icpck.en",
+		"langset"  :  { "030057.en" : {
+						"type"  : "Wellcraft process",
+						"title" : "Dynal_P22",
+						"lang"  : "english",
+						"descr" : "Dynal_P22 chips" },
+						 },
+		"icrun.py" : "[STANDARD]\\DynaScreen_2008-03-14.nocrypt",
+		"icwet"    : "[STANDARD]\\DynaScreen_090323_bottles (100ul) (all).icasp",
+		"icpck"    : "[STANDARD]\\absarr.8895.P22",
+		"icstart.py" : "[STANDARD]\\20080314",  # new icstart-file (no xpath)
+		}
+
+
+
+	iniData_030060 = {
+		"srcdir"   : "030003.icpck.en",
+		"langset"  :  { "030060.en" : {
+						"type"  : "Wellcraft process",
+						"title" : "Dynal_PVal14",
+						"lang"  : "english",
+						"descr" : "Dynal_PVal14 chips" },
+						 },
+		"icrun.py" : "[STANDARD]\\DynaScreen_2008-03-14.nocrypt",
+		"icwet"    : "[STANDARD]\\DynaScreen_090323_bottles (100ul) (all).icasp",
+		"icpck"    : "[STANDARD]\\absarr.8904.PVal14",
+		"icstart.py" : "[STANDARD]\\20080314",  # new icstart-file (no xpath)
+
+        }
+    ### NEU
+	iniData_030063 = {
+		"srcdir"   : "030003.icpck.en",
+		"langset"  :  { "030063.en" : {
+						"type"  : "Wellcraft process",
+						"title" : "Dynal_	SSO-DRB1_001",
+						"lang"  : "english",
+						"descr" : "Dynal_	SSO-DRB1_001 chips" },
+						 },
+		"icrun.py" : "[STANDARD]\\DynaScreen_2008-03-14.nocrypt",
+		"icwet"    : "[STANDARD]\\DynaScreen_060724_bottles (100ul) (all).icasp",
+		"icpck"    : "[STANDARD]\\absarr.8959.SSO-DRB1_001",
+		"icstart.py" : "[STANDARD]\\20080314",  # new icstart-file (no xpath)
+		}
+
+	iniData_030066 = {
+		"srcdir"   : "030003.icpck.en",
+		"langset"  :  { "030066.en" : {
+						"type"  : "Wellcraft process",
+						"title" : "Dynal_P23",
+						"lang"  : "english",
+						"descr" : "Dynal_P23 chips" },
+						 },
+		"icrun.py" : "[STANDARD]\\DynaScreen_2008-03-14.nocrypt",
+		"icwet"    : "[STANDARD]\\DynaScreen_090323_bottles (100ul) (all).icasp",
+		"icpck"    : "[STANDARD]\\absarr.9042.P23",
+		"icstart.py" : "[STANDARD]\\20080314",  # new icstart-file (no xpath)
+		}
+
+	iniData_030069 = {
+		"srcdir"   : "030003.icpck.en",
+		"langset"  :  { "030069.en" : {
+						"type"  : "Wellcraft process",
+						"title" : "Dynal_P23a",
+						"lang"  : "english",
+						"descr" : "Dynal_P23a chips" },
+						 },
+		"icrun.py" : "[STANDARD]\\DynaScreen_2008-03-14.nocrypt",
+		"icwet"    : "[STANDARD]\\DynaScreen_090323_bottles (100ul) (all).icasp",
+		"icpck"    : "[STANDARD]\\absarr.9082.P23a",
+		"icstart.py" : "[STANDARD]\\20080314",  # new icstart-file (no xpath)
+		}
+
+	iniData_030072 = {
+		"srcdir"   : "030003.icpck.en",
+		"langset"  :  { "030072.en" : {
+						"type"  : "Wellcraft process",
+						"title" : "Dynal P23a_Scr",
+						"lang"  : "english",
+						"descr" : "P23a_Scr chips" },
+						 },
+		"icrun.py" : "[STANDARD]\\DynaScreen_2008-03-14.crypt",
+		"icwet"    : "[STANDARD]\\DynaScreen_090323_bottles (100ul) (all).icasp",
+		"icpck"    : "[STANDARD]\\absarr.9144.P23a_Scr",
+		"icstart.py" : "[STANDARD]\\20080314",  # new icstart-file (no xpath)
+		}
+
+	iniData_030074 = {
+		"srcdir"   : "030003.icpck.en",
+		"langset"  :  { "030074.en" : {
+						"type"  : "Wellcraft process",
+						"title" : "Dynal P24",
+						"lang"  : "english",
+						"descr" : "P24 chips" },
+						 },
+		"icrun.py" : "[STANDARD]\\DynaScreen_2008-03-14.nocrypt",
+		"icwet"    : "[STANDARD]\\DynaScreen_090323_bottles (100ul) (all).icasp",
+		"icpck"    : "[STANDARD]\\absarr.2270.P24",
+		"icstart.py" : "[STANDARD]\\20080314",  # new icstart-file (no xpath)
+		}
+
+	iniData_030075 = {
+		"srcdir"   : "030003.icpck.en",
+		"langset"  :  { "030075.en" : {
+						"type"  : "Wellcraft process",
+						"title" : "Dynal PVal15a",
+						"lang"  : "english",
+						"descr" : "PVal15a chips" },
+						 },
+		"icrun.py" : "[STANDARD]\\DynaScreen_2008-03-14.nocrypt",
+		"icwet"    : "[STANDARD]\\DynaScreen_090323_bottles (100ul) (all).icasp",
+		"icpck"    : "[STANDARD]\\absarr.2269.PVal15a",
+		"icstart.py" : "[STANDARD]\\20080314",  # new icstart-file (no xpath)
+		}
+
+	iniData_030091 = {
+		"srcdir"   : "030003.icpck.en",
+		"langset"  :  { "030091.en" : {
+						"type"  : "Wellcraft process",
+						"title" : "Dynal PVal17a",
+						"lang"  : "english",
+						"descr" : "PVal17a chips" },
+						 },
+		"icrun.py" : "[STANDARD]\\DynaScreen_2008-03-14.nocrypt",
+		"icwet"    : "[STANDARD]\\DynaScreen_090323_bottles (100ul) (all).icasp",
+		"icpck"    : "[STANDARD]\\absarr.2369.PVal17a",
+		"icstart.py" : "[STANDARD]\\20080314",  # new icstart-file (no xpath)
+		}
+
+	iniData_030093 = {
+		"srcdir"   : "030003.icpck.en",
+		"langset"  :  { "030093.en" : {
+						"type"  : "Wellcraft process",
+						"title" : "Dynal PVal17b",
+						"lang"  : "english",
+						"descr" : "PVal17b chips" },
+						 },
+		"icrun.py" : "[STANDARD]\\DynaScreen_2008-03-14.nocrypt",
+		"icwet"    : "[STANDARD]\\DynaScreen_090323_bottles (100ul) (all).icasp",
+		"icpck"    : "[STANDARD]\\absarr.2390.PVal17b",
+		"icstart.py" : "[STANDARD]\\20080314",  # new icstart-file (no xpath)
+		}
+
+	iniData_030092 = {
+		"srcdir"   : "030003.icpck.en",
+		"langset"  :  { "030092.en" : {
+						"type"  : "Wellcraft process",
+						"title" : "Dynal P24_Scr",
+						"lang"  : "english",
+						"descr" : "P24_Scr chips" },
+						 },
+		"icrun.py" : "[STANDARD]\\DynaScreen_2008-03-14.crypt",
+		"icwet"    : "[STANDARD]\\DynaScreen_090323_bottles (100ul) (all).icasp",
+		"icpck"    : "[STANDARD]\\absarr.2389.P24_Scr",
+		"icstart.py" : "[STANDARD]\\20080314",  # new icstart-file (no xpath)
+		}
+
+	iniData_000007 = {
+		"srcdir"   : "030003.icpck.en",
+		"langset"  :  { "000007.en" : {
+						"type"  : "Wellcraft process",
+						"title" : "Dynal P24_aIgG_Test",
+						"lang"  : "english",
+						"descr" : "P24_aIgG_Test chips" },
+						 },
+		"icrun.py" : "[STANDARD]\\DynaScreen_2008-03-14.nocrypt",
+		"icwet"    : "[STANDARD]\\DynaScreen_090323_bottles (100ul) (all).icasp",
+		"icpck"    : "[STANDARD]\\absarr.2409.P24-aIgG-Test",
+		"icstart.py" : "[STANDARD]\\20080314",  # new icstart-file (no xpath)
+		}
+
+
+	iniData_030098 = {
+		"srcdir"   : "030003.icpck.en",
+		"langset"  :  { "030098.en" : {
+						"type"  : "Wellcraft process",
+						"title" : "Dynal P24_b",
+						"lang"  : "english",
+						"descr" : "P24_b chips" },
+						 },
+		"icrun.py" : "[STANDARD]\\DynaScreen_2008-03-14.crypt",
+		"icwet"    : "[STANDARD]\\DynaScreen_090323_bottles (100ul) (all).icasp",
+		"icpck"    : "[STANDARD]\\absarr.2249.P24_b.icpck",
+		"icstart.py" : "[STANDARD]\\20080314",  # new icstart-file (no xpath)
+		}
+
+	#****************************************************************************
+
+	packFuncObj = IconoPackager()
+	# packFuncObj.BuildPackage( "010150", iniData_010150, 0, "CLONDIAG" , "en", "050002" )
+
+	# packFuncObj.BuildPackage( "010085", iniData_010085, 1, "CLONDIAG" , "en", "020101" ) # GARM, simulation
+	# packFuncObj.BuildPackage( "050004", iniData, 0, "CLONDIAG" , "en", "050002" )
+	# packFuncObj.BuildPackage( "030002", iniData7, 0, "CLONDIAG" , "en", "050002" ) # DYNAL
+	# packFuncObj.BuildPackage( "050005", iniData5, 0, "CLONDIAG" , "en", "050002" )
+	# packFuncObj.BuildPackage( "030003", iniData_030003, 0, "CLONDIAG" , "en", "050002" )
+	# packFuncObj.BuildPackage( "030004", iniData_030003, 0, "CLONDIAG" , "en", "050002" )
+	# packFuncObj.BuildPackage( "030006", iniData_030006, 0, "CLONDIAG" , "en", "050002" )
+	# packFuncObj.BuildPackage( "030010", iniData_030010, 0, "CLONDIAG" , "en", "050002" )
+
+	# packFuncObj.BuildPackage( "030013", iniData_030013, 0, "CLONDIAG" , "en", "050002" )
+	# packFuncObj.BuildPackage( "030015", iniData_030015, 0, "CLONDIAG" , "en", "050002" )
+	# packFuncObj.BuildPackage( "030017", iniData_030017, 0, "CLONDIAG" , "en", "050002" )
+	# packFuncObj.BuildPackage( "030016", iniData_030016, 0, "CLONDIAG" , "en", "050002" )
+	# packFuncObj.BuildPackage( "030019", iniData_030019, 0, "CLONDIAG" , "en", "050002" )
+
+	# packFuncObj.BuildPackage( "030020", iniData_030020, 0, "CLONDIAG" , "en", "050002" )
+	#packFuncObj.BuildPackage( "030029", iniData_030029, 0, "CLONDIAG" , "en", "050002" )
+	# packFuncObj.BuildPackage( "030031", iniData_030031, 0, "CLONDIAG" , "en", "050002" )
+
+	#packFuncObj.BuildPackage( "030030", iniData_030030, 0, "CLONDIAG" , "en", "050002" )
+	#packFuncObj.BuildPackage( "030034", iniData_030034, 0, "CLONDIAG" , "en", "050002" )
+
+	#packFuncObj.BuildPackage( "030041", iniData_030041, 0, "CLONDIAG" , "en", "050002" )
+	#packFuncObj.BuildPackage( "030042", iniData_030042, 0, "CLONDIAG" , "en", "050002" )
+
+	#packFuncObj.BuildPackage( "030043", iniData_030043, 0, "CLONDIAG" , "en", "050002" )
+	#packFuncObj.BuildPackage( "030044", iniData_030044, 0, "CLONDIAG" , "en", "050002" )
+	#packFuncObj.BuildPackage( "030045", iniData_030045, 0, "CLONDIAG" , "en", "050002" )
+	#packFuncObj.BuildPackage( "030046", iniData_030046, 0, "CLONDIAG" , "en", "050002" )
+
+	#packFuncObj.BuildPackage( "030040", iniData_030040, 0, "CLONDIAG" , "en", "050002" )
+	#packFuncObj.BuildPackage( "030047", iniData_030047, 0, "CLONDIAG" , "en", "050002" )
+	#packFuncObj.BuildPackage( "030048", iniData_030048, 0, "CLONDIAG" , "en", "050002" )
+	#packFuncObj.BuildPackage( "030049", iniData_030049, 0, "CLONDIAG" , "en", "050002" )
+	#packFuncObj.BuildPackage( "030050", iniData_030050, 0, "CLONDIAG" , "en", "050002" )
+
+	#packFuncObj.BuildPackage( "030057", iniData_030057, 0, "CLONDIAG" , "en", "050002" )
+	#packFuncObj.BuildPackage( "030060", iniData_030060, 0, "CLONDIAG" , "en", "050002" )
+
+	#packFuncObj.BuildPackage( "030062", iniData_030062, 0, "CLONDIAG" , "en", "050002" )
+	#packFuncObj.BuildPackage( "030063", iniData_030063, 0, "CLONDIAG" , "en", "050002" )
+
+	#packFuncObj.BuildPackage( "030066", iniData_030066, 0, "CLONDIAG" , "en", "050002" )
+	#packFuncObj.BuildPackage( "030069", iniData_030069, 0, "CLONDIAG" , "en", "050002" )
+
+	#packFuncObj.BuildPackage( "030072", iniData_030072, 0, "CLONDIAG" , "en", "050002" )
+
+	#packFuncObj.BuildPackage( "030074", iniData_030074, 0, "CLONDIAG" , "en", "050002" )
+	#packFuncObj.BuildPackage( "030075", iniData_030075, 0, "CLONDIAG" , "en", "050002" )
+
+	#packFuncObj.BuildPackage( "030091", iniData_030091, 0, "CLONDIAG" , "en", "050002" )
+	#packFuncObj.BuildPackage( "030093", iniData_030093, 0, "CLONDIAG" , "en", "050002" )
+
+	#packFuncObj.BuildPackage( "030092", iniData_030092, 0, "CLONDIAG" , "en", "050002" )
+
+
+	#packFuncObj.BuildPackage( "000007", iniData_000007, 0, "CLONDIAG" , "en", "050002" )
+	packFuncObj.BuildPackage( "030098", iniData_030098, 0, "CLONDIAG" , "en", "050002" )
+
+	print ("Ready.")
+

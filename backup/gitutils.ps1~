@@ -1,0 +1,128 @@
+# GIT functions
+# Rainer Schuster (http://github.com/schuster-rainer/posh-spice)
+# Adopted from blog post of:
+# Mark Embling (http://www.markembling.info/view/my-ideal-powershell-prompt-with-git-integration)
+
+# for colorization use
+# git config --global color.ui always
+
+function isCurrentDirectoryGitRepository {
+    # check to see if this is a directory containing a symbolic reference, 
+    # fails (gracefully) on non-git repos.
+    
+    $symbolicref = git symbolic-ref HEAD
+    return $symbolicref -ne $NULL
+}
+ 
+function Get-GitBranch {
+    $symbolicref = git symbolic-ref HEAD
+    $branch = $symbolicref.substring($symbolicref.LastIndexOf("/") +1)
+    return $branch
+}
+ 
+function Get-GitStatus {
+    $status = (git diff-index --name-status HEAD)
+    $untracked = 0
+    $added = 0
+    $modified = 0
+    $deleted = 0
+    $missing = 0
+
+    $status | foreach {
+        if ($_ -match "D`t") {
+            $deleted += 1
+        }
+        elseif ($_ -match "M`t") {
+            $modified += 1
+        }
+        elseif ($_ -match "A`t") {
+            $added += 1
+        }
+        elseif ($_ -match "\!`t") {
+            $missing += 1
+        }
+        elseif ($_ -match "\?`t") {
+            $untracked += 1
+        }        
+    }
+    return @{#"untracked" = $untracked;
+             "added" = $added;
+             "modified" = $modified;
+             "deleted" = $deleted
+             #"missing" = $missing
+             }
+}
+
+function Get-GitCommands($filter) {
+  $cmdList = @()
+  $output = git help
+  foreach($line in $output) {
+    if($line -match '^   (\S+) (.*)') {
+      $cmd = $matches[1]
+      if($filter -and $cmd.StartsWith($filter)) {
+        $cmdList += $cmd.Trim()
+      }
+      elseif(-not $filter) {
+        $cmdList += $cmd.Trim()
+      }
+    }
+  }
+ 
+  $cmdList | sort
+ }
+ 
+function Get-GitRemotes($filter) {
+  if($filter) {
+    git remote | where { $_.StartsWith($filter) }
+  }
+  else {
+    git remote
+  }
+}
+ 
+function Get-GitLocalBranches($filter) {
+   git branch | foreach { 
+      if($_ -match "^\*?\s*(.*)") { 
+        if($filter -and $matches[1].StartsWith($filter)) {
+          $matches[1]
+        }
+        elseif(-not $filter) {
+          $matches[1]
+        }
+      } 
+   }
+}
+
+function Get-GitTabExpansion($lastBlock) {
+     switch -regex ($lastBlock) {
+ 
+        #Handles git branch -x -y -z <branch name>
+        'git branch -(d|D) (\S*)$' {
+          Get-GitLocalBranches($matches[2])
+        }
+ 
+        #handles git checkout <branch name>
+        #handles git merge <brancj name>
+        'git (checkout|merge) (\S*)$' {
+          Get-GitLocalBranches($matches[2])
+        }
+ 
+        #handles git <cmd>
+        #handles git help <cmd>
+        'git (help )?(\S*)$' {      
+          Get-GitCommands($matches[2])
+        }
+ 
+        #handles git push remote <branch>
+        #handles git pull remote <branch>
+        'git (push|pull) (\S+) (\S*)$' {
+          Get-GitLocalBranches($matches[3])
+        }
+ 
+        #handles git pull <remote>
+        #handles git push <remote>
+        'git (push|pull) (\S*)$' {
+          Get-GitRemotes($matches[2])
+        }
+    }	
+}

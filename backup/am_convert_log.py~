@@ -1,0 +1,8 @@
+
+from am_protocoll_data import data
+
+formated = open("am_protocol_log.txt", "w")
+for (key,value) in data:
+    formated.write("%s %.12f\n" % (key,value))
+
+formated.close()

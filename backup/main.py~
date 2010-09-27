@@ -1,0 +1,101 @@
+import os
+import time
+from win32com.client import DispatchEx
+from win32com.server.exception import COMException
+import pythoncom
+
+from QCAutomation import PackageCreator    
+
+config_element = "plugin/experiment/"
+
+def exports(base_dir):    
+    import AM_misc as misc
+    fp_config = os.path.join(base_dir, "config.xml")
+    config = misc.LoadConfig(fp_config, config_element)
+    config["base_dir"] = base_dir
+    
+    
+    def test_login(*args,**kwds):
+        print "## Plugin: Login to Partisan"
+        print config
+        try:
+            adapter = DispatchEx(config["db_adapter"])
+            config['user'] = kwds['user']
+            config['pwd'] = kwds['pwd']
+            adapter.SetCredentials(config['user'], config['pwd'])
+            adapter.Connect( config["server_url"], config["dbid"])
+            return (True, "")
+        except pythoncom.com_error, (hr, msg, exc, arg):
+            print "The function call failed with code %d: %s" % (hr, msg)
+            if exc is None:
+                msg = "There is no extended error information"
+                print msg
+                return (False, msg)                
+            else:
+                wcode, source, text, helpFile, helpId, scode = exc
+                print "The source of the error is", source
+                print "The error message is", text
+                print "More info can be found in %s (id=%d)" % (helpFile, helpId)
+                return (False, text)
+        except Exception, e:
+            return (False, e.message)
+        
+    yield ("login_user", test_login)
+    
+    def download_and_create_package(*args, **kwds):
+        dbAdapter = DispatchEx(config["db_adapter"])
+        dbAdapter.SetCredentials(config['user'], config['pwd'])
+        dbAdapter.Connect( config["server_url"], config["dbid"])
+        qc_auto = PackageCreator(dbAdapter, config)
+        return qc_auto.create_package(*args)        
+    yield ("download_and_create_package", download_and_create_package)
+    
+    
+    def experiment_post_processing(*args, **kwds):
+        dbAdapter = DispatchEx(config["db_adapter"])
+        dbAdapter.SetCredentials(config['user'], config['pwd'])
+        dbAdapter.Connect( config["server_url"], config["dbid"])
+        experiment_info = kwds['experiment_info']
+        project_id = experiment_info['memo']
+
+        image = kwds['image']
+        result = kwds['result']
+        try:
+            import Results
+            result_exporter = Results.Exporter(config['export_folder'], 
+                                               experiment_info,
+                                               project_id)
+            image = result_exporter.export_file(kwds['image'])
+            result = result_exporter.export_file(kwds['result'])
+            segmentation = result_exporter.export_file(kwds['image'] + '.png')
+        except:
+            pass
+                
+        
+        dbAdapter.CreateExperiment( experiment_info['dmx'], 
+                                    project_id,
+                                    experiment_info['position'],
+                                    config['exp_template_id'],
+                                    kwds['package'],
+                                    image,
+                                    result,
+                                    experiment_info['disposible_type']
+                                    )
+    yield ("experiment_post_processing", experiment_post_processing)
+    
+    def experiment_post_processed(*args, **kwds):
+        
+        experiment_dir = kwds['experiment_dir']
+        experiment_info = kwds['experiment_info']
+        project_id = experiment_info['memo']
+        files_to_export = config['export_post_processed'].split(',')
+
+        import Results
+        result_exporter = Results.Exporter(config['export_folder'], 
+                                           experiment_info,
+                                           project_id)
+        for file_name in files_to_export:
+            file_name = file_name.strip()
+            fp_exported = result_exporter.export_file(os.path.join(experiment_dir, file_name))
+            print "exporterd experiment file %s to %s" % (file_name, fp_exported )        
+    yield ("experiment_post_processed", experiment_post_processed)
