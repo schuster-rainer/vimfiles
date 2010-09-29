@@ -219,7 +219,7 @@
         set columns=180 " perfect size for me
         
         if has('gui_gtk2')
-            set guifont=Consolas\ 12,Monospace\ 10 " my favorite font
+            set guifont=Consolas\ 12" my favorite font
         elseif has('gui_photon') 
             set guifont=Consolas:s12,DejaVu\ Sans\ Monospace:s11 
         elseif has('gui_kde') 
@@ -247,14 +247,23 @@
         set lines=45 " perfect size for me
         set mousehide " hide the mouse cursor when typing
     " }
+    else 
+        colorscheme lucius 
+    endif
 
 
     " Font Switching Binds {
-        map <F8> <ESC>:set guifont=Consolas:h8<CR>
-        map <F9> <ESC>:set guifont=Consolas:h10<CR>
-        map <F10> <ESC>:set guifont=Consolas:h12<CR>
-        map <F11> <ESC>:set guifont=Consolas:h16<CR>
-        map <F12> <ESC>:set guifont=Consolas:h20<CR>
+        if has("gui_running")
+            if has("unix")
+                map <F8> <ESC>:set guifont=Consolas\ 8<CR>
+                map <F9> <ESC>:set guifont=Consolas\ 12<CR>
+                map <F10> <ESC>:set guifont=Consolas\ 16<CR>
+            else
+                map <F8> <ESC>:set guifont=Consolas:h8<CR>
+                map <F9> <ESC>:set guifont=Consolas:h12<CR>
+                map <F10> <ESC>:set guifont=Consolas:h16<CR>
+            endif
+       fi 
     " }
     endif
 " }

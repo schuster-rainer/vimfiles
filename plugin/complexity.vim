@@ -361,8 +361,5 @@ sign define low_complexity text=XX texthl=low_complexity
 sign define medium_complexity text=XX texthl=medium_complexity
 sign define high_complexity text=XX texthl=high_complexity
 
-autocmd! BufReadPost
-BufWritePost
-FileReadPost
-FileWritePost *.py call ShowComplexity()
+autocmd! BufReadPost,BufWritePost,FileReadPost,FileWritePost *.py call ShowComplexity()
 
