@@ -1,4 +1,0 @@
-au BufNewFile,BufRead *.fs set ft=fs
-au BufNewFile,BufRead *.fs set fileencoding=utf-8 
-au BufNewFile,BufRead *.fs set fileencodings=utf-8 
-

@@ -168,6 +168,25 @@
         " }
     " }
 
+    " Zencoding {
+        let g:user_zen_settings = {
+        \ 'php' : {
+        \   'extends' : 'html',
+        \   'filters' : 'c',
+        \ },
+        \ 'xml' : {
+        \   'extends' : 'html',
+        \ },
+        \ 'haml' : {
+        \   'extends' : 'html',
+        \  },
+        \ 'jinja' : {
+        \   'extends' : 'html',
+        \ }
+        \}
+    
+    " }
+
  " }
 
 " Mappings {

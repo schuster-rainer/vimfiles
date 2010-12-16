@@ -1,4 +1,0 @@
-REM Launch KDE terminal program ('konsole') on a remote Linux host 
-REM 
-
-"%PROGRAMFILES%\Xming\run.exe" "%PROGRAMFILES%\Xming\plink.exe" -ssh -2 -X -i "X:\.ssh\id_dsa.ppk" "%USERNAME%@cray.localnet" konsole 

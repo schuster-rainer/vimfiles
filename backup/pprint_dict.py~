@@ -1,7 +1,0 @@
-def test_pprint_dic():
-    import pprint
-
-    experiment_data = {'rrl_0101_0177_10': {'spots': [{'Signal': '.00946', 'Flags': '0', 'spot_id': '41'}, {'Signal': '.007322', 'Flags': '0', 'spot_id': '233'}, {'Signal': '-.005711', 'Flags': '0', 'spot_id': '421'}]}}
-    pprint.pprint(experiment_data, indent=1, width = 60)
-
-test_pprint_dic()

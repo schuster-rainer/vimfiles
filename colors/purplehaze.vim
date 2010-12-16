@@ -1,8 +1,9 @@
 " Vim color file
 "
-" Author: Brian Mock <mock.brian@gmail.com>
-"
-" Note: Based on Oblivion color scheme for gedit (gtk-source-view)
+" Author: Rainer Schuster <schuster-rainer@web.de>
+" 
+" Note: Based on darkspektrum from Brian Mock <mock.brian@gmail.com> which
+" itself is based on Oblivion color scheme for gedit (gtk-source-view)
 "
 " cool help screens
 " :he group-name
@@ -20,7 +21,7 @@ if version > 580
 	syntax reset
     endif
 endif
-let g:colors_name="darkspectrum"
+let g:colors_name="purplehaze"
 
 hi Normal guifg=#efefef guibg=#2A2A2A
 
@@ -41,8 +42,6 @@ hi DiffText        guifg=#8ae234 guibg=#4e9a06 gui=none
 "hi DiffDelete      guifg=#252723 guibg=#000000 gui=none
 hi DiffDelete      guifg=#000000 guibg=#000000 gui=none
 "hi ErrorMsg
-
-hi Number		guifg=#fce94f
 
 hi Folded		guibg=#000000 guifg=#FFFFFF gui=bold
 hi vimFold		guibg=#000000 guifg=#FFFFFF gui=bold
@@ -68,22 +67,24 @@ hi SpecialKey	guifg=#8ae234
 
 hi Title		guifg=#ef5939
 hi WarningMsg	guifg=#ef5939
-hi Number		guifg=#fcaf3e
+hi Number		guifg=#84D2AF
 
 hi MatchParen	guibg=#ad7fa8 guifg=#FFFFFF
 hi Comment		guifg=#8a8a8a
-hi Constant		guifg=#ef5939 gui=none
-hi String		guifg=#fce94f
-hi Identifier	guifg=#729fcf
+hi Constant		guifg=#88BDF8 gui=none
+hi String		guifg=#F2DB8C gui=bold
+hi Identifier	guifg=#88BDF8
 hi Statement	guifg=#A678A0 gui=bold
 hi PreProc		guifg=#A678A0 gui=bold
-hi Type			guifg=#8ae234 gui=bold
+"hi Type			guifg=#8ae234 gui=bold
+hi Type			guifg=#A678A0 gui=bold
 hi Special		guifg=#e9b96e
 hi Underlined	guifg=#ad7fa8 gui=underline
 hi Directory	guifg=#729fcf
 hi Ignore		guifg=#555753
 hi Todo			guifg=#FFFFFF guibg=#ef5939 gui=bold
-hi Function		guifg=#ffffff gui=bold
+hi Function		guifg=#84D2AF gui=bold
+"hi StorageClass guifg=#84D2AF gui=bold
 
 "hi WildMenu     guibg=#2e3436 guifg=#ffffff gui=bold
 "hi WildMenu     guifg=#7fbdff guibg=#425c78 gui=none
@@ -112,8 +113,10 @@ hi link pythonFunction	Function
 hi link Question		Type
 hi link CursorIM		Cursor
 hi link VisualNOS		Visual
-hi link xmlTag			Identifier
-hi link xmlTagName		Identifier
+hi link xmlTag			Comment
+hi link xmlTagName		Type
+hi link xmlEndTag       Type
+hi link xmlAttrib       Function
 hi link shDeref			Identifier
 hi link shVariable		Function
 hi link rubySharpBang	Special

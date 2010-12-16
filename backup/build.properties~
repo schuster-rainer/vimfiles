@@ -1,4 +1,0 @@
-<?xml version="1.0"?>
-<project name="custom properties">
-    <property name="sharpdevelop.dir" value="c:\Program Files (x86)\SharpDevelop\3.0\bin" />
-</project>

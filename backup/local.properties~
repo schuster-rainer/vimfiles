@@ -1,4 +1,0 @@
-clojure.jar="c:/shared/tools/clojure-1.2.0/clojure.jar"
-clojure-contrib.jar="c:/shared/tools/clojure-contrib-1.2.0/target/clojure-contrib-1-2-0.jar"
-nailgun-client=ng
-

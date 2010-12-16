@@ -1,4 +1,7 @@
 let g:netrw_dirhistmax  =10
-let g:netrw_dirhist_cnt =2
+let g:netrw_dirhist_cnt =5
 let g:netrw_dirhist_1='c:/shared/posh-spice'
 let g:netrw_dirhist_2='C:/Users/rainer_s/Documents/WindowsPowerShell'
+let g:netrw_dirhist_3='C:/Projects/OSS/boo/build'
+let g:netrw_dirhist_4='C:/Users/rainer_s/.matplotlib'
+let g:netrw_dirhist_5='C:/Projects/Playground/flaskr/flaskr/views'
