@@ -19,9 +19,9 @@
     filetype plugin on " load filetype plugins
     set noerrorbells " don't make noise
     set backup " make backup files
-    set backupdir=~/vimfiles/backup " where to put backup files
+    set backupdir=~/backup " where to put backup files
     set clipboard+=unnamed " share windows clipboard
-    set directory=~/vimfiles/tmp " directory to place swap files in
+    set directory=~/tmp " directory to place swap files in
     set hidden " you can change buffers without saving
     " (XXX: #VIM/tpope warns the line below could break things)
     "set whichwrap=b,s,h,l,<,>,~,[,] " everything wraps
@@ -236,22 +236,53 @@
     " Basics {
         colorscheme purplehaze
         set columns=180 " perfect size for me
-        set guifont=Consolas:h12 " My favorite font
-        set guioptions=ce
-        "              ||
-        "              |+-- use simple dialogs rather than pop-ups
-        "              +-- use GUI tabs, not console style tabs
+        
+        if has('gui_gtk2')
+            set guifont=Consolas\ 12" my favorite font
+        elseif has('gui_photon') 
+            set guifont=Consolas:s12,DejaVu\ Sans\ Monospace:s11 
+        elseif has('gui_kde') 
+            " the obsolete kvim 
+            " just make sure it works correctly if it hits our vimrc 
+            set guifont=DejaVu\ Sans\ Mono/12/-1/5/50/0/0/0/1/0 
+        elseif has('x11') 
+            " I'm guessing the following (other-X11 including GTK1) 
+            " please check, and correct if necessary. 
+            " On GTK1 (and maybe some others) you can use :set guifont=* 
+            " Replace by asterisks like here 
+            " to make it a little more general: 
+            set guifont=-*-dejavu-medium-r-normal-*-*-110-*-*-m-*-* 
+            " add another elseif here 
+            " if you want DejaVu on mac-without-x11 
+        else 
+            " not x11 (probably Windows) 
+            set guifont=Consolas:h12:cDEFAULT 
+        endif
+        set guioptions=mce
+        "              |||
+        "              ||+-- use simple dialogs rather than pop-ups
+        "              |+-- use GUI tabs, not console style tabs
+        "              +-- use toolbar
         set lines=45 " perfect size for me
         set mousehide " hide the mouse cursor when typing
     " }
+    else 
+        colorscheme lucius 
+    endif
 
 
     " Font Switching Binds {
-        map <F8> <ESC>:set guifont=Consolas:h8<CR>
-        map <F9> <ESC>:set guifont=Consolas:h10<CR>
-        map <F10> <ESC>:set guifont=Consolas:h12<CR>
-        map <F11> <ESC>:set guifont=Consolas:h16<CR>
-        map <F12> <ESC>:set guifont=Consolas:h20<CR>
+        if has("gui_running")
+            if has("unix")
+                map <F8> <ESC>:set guifont=Consolas\ 8<CR>
+                map <F9> <ESC>:set guifont=Consolas\ 12<CR>
+                map <F10> <ESC>:set guifont=Consolas\ 16<CR>
+            else
+                map <F8> <ESC>:set guifont=Consolas:h8<CR>
+                map <F9> <ESC>:set guifont=Consolas:h12<CR>
+                map <F10> <ESC>:set guifont=Consolas:h16<CR>
+            endif
+       fi 
     " }
     endif
 " }
