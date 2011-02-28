@@ -17,6 +17,7 @@
 " General {
     filetype plugin indent on " load filetype plugins/indent settings
     filetype plugin on " load filetype plugins
+    set autoindent
     set noerrorbells " don't make noise
     set backup " make backup files
     set backupdir=~/backup " where to put backup files
@@ -122,6 +123,9 @@
     let b:match_ignorecase = 1 " case is stupid
     let perl_extended_vars=1 " highlight advanced perl vars 
                                " inside strings
+    
+    let g:SuperTabDefaultCompletionType = "context"
+    let g:pyflakes_use_quickfix = 0
 
     "if has("python")
         "let $PYTHONPATH .= ':~/vimfiles/rope_plugin/rope:~/vimfiles/rope_plugin/ropemode:~/vimfiles/rope_plugin/ropevim'
@@ -146,7 +150,7 @@
     " TagList Settings {
         let Tlist_Auto_Open=0 " let the tag list open automagically
         let Tlist_Compact_Format = 1 " show small menu
-        let Tlist_Ctags_Cmd = 'C:\shared\tools\ctags58\ctags.exe' " location of ctags
+        let Tlist_Ctags_Cmd = 'D:\shared\tools\ctags58\ctags.exe' " location of ctags
         let Tlist_Enable_Fold_Column = 0 " do show folding tree
         let Tlist_Exist_OnlyWindow = 1 " if you are the last, kill 
                                         " yourself
