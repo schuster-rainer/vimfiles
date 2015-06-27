@@ -1,0 +1,212 @@
+snippet arghs "ArghParser with subcommands" b
+parser = argh.ArghParser()
+parser.add_commands([$1`!p snip.rv=t[1]`])
+parser.dispatch()
+endsnippet
+
+snippet isfc "isfile guard for console" b
+if not os.path.isfile($1):
+    sys.stderr.write("File {} does not exist.{}".format($1, os.linesep))
+    return
+$0
+endsnippet
+
+global !p
+import pprint
+from requests import Session
+from pygments import highlight
+from pygments.lexers import get_lexer_by_name, guess_lexer
+from pygments.formatters import HtmlFormatter, TerminalFormatter
+import json
+import io
+import os
+from os.path import isfile, join
+import pyaml
+import yaml
+import sys
+from itertools import islice
+from StringIO import StringIO
+import json
+import xml.dom.minidom
+
+CONFIG_FOLDER = os.path.join(os.path.expanduser('~'),
+                             '.redmine')
+SETTINGS_FILE = os.path.join(CONFIG_FOLDER, 'settings.json')
+
+def load_json(filename):
+    with io.open(filename) as f:
+        return json.load(f)
+
+# endpoints = load_json(os.path.join(CONFIG_FOLDER, 'endpoints.json'))
+
+
+def window(seq, n=2):
+    "Returns a sliding window (of width n) over data from the iterable"
+    "   s -> (s0,s1,...s[n-1]), (s1,s2,...,sn), ...                   "
+    it = iter(seq)
+    result = tuple(islice(it, n))
+    if len(result) == n:
+        yield result
+    for elem in it:
+        result = result[1:] + (elem,)
+        yield result
+
+
+class Utf8PrettyPrinter(pprint.PrettyPrinter):
+    def format(self, obj, context, maxlevels, level):
+        if isinstance(obj, unicode):
+            return ('"'+obj.encode('utf8')+'"', True, False)
+        return pprint.PrettyPrinter.format(self, obj, context, maxlevels, level)
+
+
+def prettyfy_yaml(data, encoding):
+    stream = StringIO()
+    pyaml.dump(data, stream, vspacing=[0,0])
+    return stream.getvalue().decode(encoding)
+
+
+def prettyfy_json(data, encoding):
+    return json.dumps(data,
+                        sort_keys=False,
+                        indent=2,
+                        separators=(',', ': '),
+                        ensure_ascii=False)
+
+
+def prettyfy_python(data, encoding):
+    printer = Utf8PrettyPrinter(indent=1)
+    return printer.pformat(data).decode(encoding)
+
+
+def formatted(resp, api, do_highlight, data_format):
+    try:
+        if api == 'json':
+            #lexer = get_lexer_by_name(api)
+            data = resp.json()
+            this_module = sys.modules[__name__]
+            prettyfyer = getattr(this_module, "prettyfy_" + data_format)
+            content = prettyfyer(data, resp.encoding)
+            if do_highlight:
+                formatter = TerminalFormatter()
+                lexer = get_lexer_by_name(data_format)
+                return highlight(content, lexer, formatter)
+            return content
+        elif api == 'xml':
+            lexer = get_lexer_by_name(api)
+            formatter = TerminalFormatter()
+            xml = xml.dom.minidom.parseString(resp.content)
+            content = xml.toprettyxml()
+            if highlight:
+                return highlight(content, lexer, formatter)
+            return conent
+    except ValueError:
+        if len(resp.content) == 0:
+            return
+        raise
+    raise ValueError("Unknown API format")
+
+
+def load_format(api, data_format, filename):
+    with open(filename) as f:
+        if api=='json':
+            if data_format == 'json':
+                return f.read()
+            elif data_format == 'yaml':
+                data = yaml.load(f)
+                return json.dumps(data)
+            else:
+                raise NotImplementedError("json api only supports json and yaml file input")
+        elif api=='xml':
+            if data_format == 'xml':
+                return f.read()
+            else:
+                raise NotImplementedError("xml api only supports xml file input")
+        else:
+            raise NotImplementedError("Only json or xml possible")
+
+def bind_endpoint_func(instance_name):
+    """ Returns a function named as the value of instance_name
+        for talking to redmine given by the its parameters
+    """
+    # @argh.arg('-p', '--params', nargs='+', type=str)
+    # @argh.arg('-h', '--no-highlight', action='store_true' )
+    # @argh.arg('-o', '--data_format', help="if api==json choose json, python or yaml")
+    # @argh.arg('-v', '--verbose', action='store_true')
+    # @argh.arg('-a', '--api', help="json or xml")
+    # @argh.arg('-d', '--data', help="data to use for PUT and POST")
+    # @argh.arg('action', help="use get, post (for create), put (for update), delete")
+    def func(endpoint, action, api='json', data_format="yaml", no_highlight=False,
+             verbose=False, params=[], data=None):
+        config_filename = os.path.join(CONFIG_FOLDER, 'instance.d', instance_name + '.json')
+        if not os.path.isfile(config_filename):
+            print "File {} does not exist.{}".format(config_filename, os.linesep)
+            return
+        config = load_json(config_filename)
+        headers = {
+            "X-Redmine-API-Key": config['api_key'],
+            "Content-type": "application/" + api,
+        }
+        param_dict = { k: v.split(",") for (k,v)in window(params) }
+        if verbose:
+            print param_dict
+        session = Session()
+        url = '{0}/{1}.{2}'.format(config['uri'], endpoint, api)
+        if verbose:
+            print url
+        action_func = getattr(session, action)
+        if data:
+            data = load_format(api, data_format, data)
+            if verbose:
+                print data
+        try:
+            resp = action_func(
+                url,
+                verify=config.get('sslVerify', True),
+                data=data,
+                params=param_dict,
+                headers=headers)
+        except Exception as e:
+            return e
+        if verbose:
+            print(resp.status_code)
+            print(resp.reason)
+        if resp.status_code >= 400:
+            if verbose:
+                return
+            print(resp.status_code)
+            print(resp.reason)
+            return
+        return resp
+
+    func.__name__ = instance_name
+    return func
+
+
+def get_instances():
+    """ Loads all *.json configuration files from ~/.redmine/instance.d/ """
+    instance_d = os.path.join(CONFIG_FOLDER, 'instance.d')
+    files = [os.path.splitext(f)
+                 for f in os.listdir(instance_d)
+                 if isfile(join(instance_d,f))
+                 and f.endswith(".json")]
+    return [bind_endpoint_func(str(instance))
+            for instance, ext in files]
+endglobal
+
+
+snippet "refs (\w+)" "test global funcs" r
+$1`!p 
+instance = bind_endpoint_func("ennor")
+resp = instance("issues/{0}".format(match.group(1)), "get")
+issue = resp.json()['issue']
+snip.rv = issue['subject']
+#parent_id = issue['parent']['id']
+#resp_p = instance("issues/{0}".format(parent_id), "get")
+#issue_p = resp_p.json()['issue']
+#snip.rv += "{0}: #{1}".format(issue_p['tracker']['name'], parent_id)
+`
+
+Refs-Ennor: #`!p snip.rv = match.group(1)`
+endsnippet
+
+
