@@ -26,18 +26,14 @@ import yaml
 import sys
 from itertools import islice
 from StringIO import StringIO
-import json
 import xml.dom.minidom
 
 CONFIG_FOLDER = os.path.join(os.path.expanduser('~'),
                              '.redmine')
-SETTINGS_FILE = os.path.join(CONFIG_FOLDER, 'settings.json')
 
 def load_json(filename):
     with io.open(filename) as f:
         return json.load(f)
-
-# endpoints = load_json(os.path.join(CONFIG_FOLDER, 'endpoints.json'))
 
 
 def window(seq, n=2):
@@ -204,7 +200,6 @@ snip.rv = issue['subject']
 #resp_p = instance("issues/{0}".format(parent_id), "get")
 #issue_p = resp_p.json()['issue']
 #snip.rv += "{0}: #{1}".format(issue_p['tracker']['name'], parent_id)
-`
 
 Refs-Ennor: #`!p snip.rv = match.group(1)`
 endsnippet
