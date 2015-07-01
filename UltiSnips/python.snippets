@@ -163,15 +163,6 @@ def bind_endpoint_func(instance_name):
                 headers=headers)
         except Exception as e:
             return e
-        if verbose:
-            print(resp.status_code)
-            print(resp.reason)
-        if resp.status_code >= 400:
-            if verbose:
-                return
-            print(resp.status_code)
-            print(resp.reason)
-            return
         return resp
 
     func.__name__ = instance_name
@@ -190,18 +181,38 @@ def get_instances():
 endglobal
 
 
-snippet "refs (\w+)" "test global funcs" r
+snippet "refs (\w+)" "Reference Redmine Ticket" r
 $1`!p 
 instance = bind_endpoint_func("ennor")
 resp = instance("issues/{0}".format(match.group(1)), "get")
-issue = resp.json()['issue']
-snip.rv = issue['subject']
-#parent_id = issue['parent']['id']
-#resp_p = instance("issues/{0}".format(parent_id), "get")
-#issue_p = resp_p.json()['issue']
-#snip.rv += "{0}: #{1}".format(issue_p['tracker']['name'], parent_id)
+if resp.status_code >= 400:
+    snip.rv += "ERROR: ticket #{0} does not exist".format(match.group(1))
+else:
+    issue = resp.json()['issue']
+    snip.rv = issue['subject']
+    snip += ""
+    snip += "Refs-Ennor: #" + match.group(1)
+`
 
-Refs-Ennor: #`!p snip.rv = match.group(1)`
 endsnippet
 
-
+snippet "refst (\w+)" "Reference Redmine Ticket and Parent Tracker" r
+$1`!p 
+instance = bind_endpoint_func("ennor")
+resp = instance("issues/{0}".format(match.group(1)), "get")
+if resp.status_code >= 400:
+    snip.rv += "ERROR: ticket #{0} does not exist".format(match.group(1))
+else:
+    issue = resp.json()['issue']
+    snip.rv = issue['subject']
+    if issue.has_key("parent"):
+        parent_id = issue['parent']['id']
+        resp_p = instance("issues/{0}".format(parent_id), "get")
+        if resp_p.status_code < 400:
+            snip += ""
+            issue_p = resp_p.json()['issue']
+            snip += "{0}: #{1} {2}".format(issue_p['tracker']['name'], parent_id, issue_p['subject'])
+    snip += ""
+    snip += "Refs-Ennor: #" + match.group(1)
+`
+endsnippet
