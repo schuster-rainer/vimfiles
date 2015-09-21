@@ -130,6 +130,7 @@ let g:pymode_options_max_line_length = 79
 let g:pymode_options_colorcolumn = 0
 let g:pymode_folding = 0
 let g:pymode_lint = 0
+let g:pymode_rope=0
 
 "let g:low_complexity_fg = "#84D2AF"
 "let g:low_complexity_bg = "#84D2AF"

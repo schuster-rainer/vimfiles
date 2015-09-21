@@ -1,0 +1,30 @@
+global !p
+endglobal
+
+
+snippet "refs (\w+)" "get title from redmine ticket issue" r
+$1`!p 
+from redmine import Redmine
+import os
+import json
+
+conf_fullpath = os.path.expanduser("~/.redmine/instance.d/ennor.json")
+with open(conf_fullpath) as f:
+    conf = json.load(f)
+
+r = Redmine(conf['uri'], key=conf["api_key"], requests={'verify': conf["sslVerify"]})
+issue = r.issue.get(match.group(1))
+snip.rv = issue.subject
+`
+
+Refs-Ennor: #`!p snip.rv = match.group(1)`
+endsnippet
+
+
+# snippet "clrtest" "some test" r
+# $1`!p
+# import clr
+# from System import String
+# snip.rv = String("").GetType()
+# `
+# endsnippet
