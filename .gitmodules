@@ -50,3 +50,21 @@
 	path = bundle/vim-jinja2-syntax
 	url = https://github.com/Glench/Vim-Jinja2-Syntax.git
 
+[submodule "bundle/syntastic"]
+	path = bundle/syntastic
+	url = https://github.com/scrooloose/syntastic.git
+[submodule "bundle/vim-fsharp"]
+	path = bundle/vim-fsharp
+	url = https://github.com/fsharp/vim-fsharp.git
+[submodule "bundle/vim-xpath"]
+	path = bundle/vim-xpath
+	url = https://github.com/actionshrimp/vim-xpath.git
+[submodule "bundle/vim-hy"]
+	path = bundle/vim-hy
+	url = https://github.com/hylang/vim-hy
+[submodule "bundle/vim-virtualenv"]
+	path = bundle/vim-virtualenv
+	url = https://github.com/jmcantrell/vim-virtualenv.git
+[submodule "bundle/vim-behave"]
+	path = bundle/vim-behave
+	url = https://github.com/rooprob/vim-behave.git
