@@ -71,6 +71,10 @@ let hs_highlight_debug = 1
 " Clojure
 let tlist_clojure_settings = 'lisp;f:function'
 
+"easytags
+let g:easytags_async=1
+set tags=./.tags;,~/.vimtags
+
 
 " TagList Settings
 let Tlist_Auto_Open=0 " let the tag list open automagically
@@ -108,6 +112,8 @@ nnoremap <F2> :set invpaste paste?<CR>
 set pastetoggle=<F2>
 set showmode
 let maplocalleader = ","
+nnoremap <c-]> :CtrlPtjump<cr>
+vnoremap <c-]> :CtrlPtjumpVisual<cr>
 
 
 
@@ -215,7 +221,7 @@ endif
 " ultisnips
 let g:ultisnips_python_style="doxygen"
 " Trigger configuration. Do not use <tab> if you use https://github.com/Valloric/YouCompleteMe.
-let g:UltiSnipsExpandTrigger="<c-h>"
+let g:UltiSnipsExpandTrigger="<D-CR>"
 let g:UltiSnipsJumpForwardTrigger="<c-j>"
 let g:UltiSnipsJumpBackwardTrigger="<c-k>"
 

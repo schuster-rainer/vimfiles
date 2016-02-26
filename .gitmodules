@@ -68,3 +68,18 @@
 [submodule "bundle/vim-behave"]
 	path = bundle/vim-behave
 	url = https://github.com/rooprob/vim-behave.git
+[submodule "bundle/vim-bitbake"]
+	path = bundle/vim-bitbake
+	url = https://github.com/kergoth/vim-bitbake.git
+[submodule "bundle/vim-easytags"]
+	path = bundle/vim-easytags
+	url = git@github.com:xolox/vim-easytags.git
+[submodule "bundle/file-line"]
+	path = bundle/file-line
+	url = git@github.com:bogado/file-line.git
+[submodule "bundle/vim-misc"]
+	path = bundle/vim-misc
+	url = git@github.com:xolox/vim-misc.git
+[submodule "bundle/vim-ctrlp-tjump"]
+	path = bundle/vim-ctrlp-tjump
+	url = git@github.com:ivalkeen/vim-ctrlp-tjump.git
