@@ -1,5 +1,10 @@
 runtime bundle/vim-pathogen/autoload/pathogen.vim
 
+" dependencies 
+" sudo pip install python-redmine for a certain Ultisnip snippet
+" ctags
+" in bundle/YouCompleteMe run ./install.py with arguments
+
 set nocompatible " explicitly get out of vi-compatible mode
 execute pathogen#infect()
 
