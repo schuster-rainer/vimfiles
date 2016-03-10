@@ -37,7 +37,8 @@ set list
 set matchtime=5 " how many tenths of a second to blink 
                 " matching brackets for
 set nostartofline " leave my cursor where it was
-set nonumber " turn off line quickfix = 1
+set number " NOTE: turn off line quickfix = 1
+set relativenumber " show numbers 1-10  below and above current
 
 set report=0 " tell us when anything is changed via :...
 set shortmess=aOstT " shortens messages to avoid 
@@ -104,6 +105,11 @@ let tlist_php_settings = 'php;c:class;d:constant;f:function'
 " just functions and classes please
 let tlist_vb_settings = 'asp;f:function;c:class' 
 
+" CtrlP
+" tjump
+let g:ctrlp_tjump_only_silent = 1
+let g:ctrlp_tjump_skip_tag_name = 1
+
 " Global Mappings
 " space / shift-space scroll in normal mode
 " noremap <S-space> <C-b>
@@ -113,13 +119,20 @@ map <Right> <ESC>:bn<RETURN>
 map <Up> <ESC>:NERDTreeToggle<RETURN>
 map <Down> <ESC>:TlistToggle<RETURN>
 nnoremap ,cd :cd %:p:h<CR>:pwd<CR>
-nnoremap <F2> :set invpaste paste?<CR>
-set pastetoggle=<F2>
+"nnoremap <F2> :set invpaste paste?<CR>
+"set pastetoggle=<F2>
 set showmode
 let maplocalleader = ","
+let mapleader = ";"
+imap <leader>e <Esc>
+map <leader>m :make <CR>
+" inoremap <Esc> <Esc>`^
+" write file with sudo
+noremap <Leader>W :w !sudo tee % > /dev/null
 nnoremap <c-]> :CtrlPtjump<cr>
 vnoremap <c-]> :CtrlPtjumpVisual<cr>
-
+" toggle relative line numbers
+nnoremap <silent> <leader>N :setlocal relativenumber!<cr>
 
 
 " Python
@@ -143,12 +156,6 @@ let g:pymode_folding = 0
 let g:pymode_lint = 0
 let g:pymode_rope=0
 
-"let g:low_complexity_fg = "#84D2AF"
-"let g:low_complexity_bg = "#84D2AF"
-"hi g:medium_complexity guifg=#F2DB8C guibg=#F2DB8C
-"hi g:high_complexity guifg=#F0826E guibg=#F0826E
-"kklet g:complexity_always_on = 1
-
 " Coffee-Script
 autocmd FileType coffee setlocal expandtab shiftwidth=2 softtabstop=2
 autocmd FileType html setlocal expandtab shiftwidth=2 softtabstop=2
@@ -171,31 +178,49 @@ au FileType xml setlocal foldmethod=syntax
 " reStructuredText
 au BufNewFile,BufRead,BufEnter   *.rst    setlocal spell    spelllang=en_gb
 
+" lldb.nvim / C/C++
+
+au FileType c,cpp vmap <F2> <Plug>LLStdInSelected
+au FileType c,cpp nmap <F3> <Plug>LLBreakSwitch
+au FileType c,cpp nnoremap <F4> :LLstdin<CR>
+au FileType c,cpp nnoremap <F5> :LLmode debug<CR>
+au FileType c,cpp nnoremap <S-F5> :LLmode code<CR>
+au FileType c,cpp nnoremap <F8> :LL continue<CR>
+au FileType c,cpp nnoremap <S-F8> :LL process interrupt<CR>
+au FileType c,cpp nnoremap <F9> :LL print <C-R>=expand('<cword>')<CR>
+au FileType c,cpp vnoremap <F9> :<C-U>LL print <C-R>=lldb#util#get_selection()<CR><CR>
+au FileType c,cpp noremap <F6> :LL step<CR>
+au FileType c,cpp noremap <F7> :LL stepi<CR>
+
+au FileType c,cpp nnoremap <LOCALLEADER>h :LL help 
+" jump to line
+au FileType c,cpp nnoremap <LOCALLEADER>j :LL j <C-r>=line('.')<CR><CR>
+au FileType c,cpp nnoremap <LOCALLEADER>bt :LL bt<CR>
+au FileType c,cpp nnoremap <LOCALLEADER>bs <Plug>LLBreakSwitch
+au FileType c,cpp nnoremap <LOCALLEADER>b :LL b
+
+" YouCompleteMe
+nnoremap <leader>jd :YcmCompleter GoTo<CR>
+
+" DevIcons
+let g:WebDevIconsNerdTreeGitPluginForceValign=1
+
+
 
 
 " GUI
 if has("gui_running")
     colorscheme purplehaze
     set columns=85 " perfect size for me
-    if has('gui_gtk2')
-        set guifont=Source\ Code\ Pro\ 13
-    elseif has('gui_photon')
-        set guifont=Consolas:s12,DejaVu\ Sans\ Monospace:s11
-    elseif has('gui_kde')
-        " the obsolete kvim
-        " just make sure it works correctly if it hits our vimrc
-        set guifont=DejaVu\ Sans\ Mono/12/-1/5/50/0/0/0/1/0
-    elseif has('x11')
-        " I'm guessing the following (other-X11 including GTK1)
-        " please check, and correct if necessary.
-        " On GTK1 (and maybe some others) you can use :set guifont=*
-        " Replace by asterisks like here
-        " to make it a little more general:
-        set guifont=-*-dejavu-medium-r-normal-*-*-110-*-*-m-*-*
-        " add another elseif here
-        " if you want DejaVu on mac-without-x11
+    if has("unix")
+        let s:uname = system("uname")
+        if s:uname == "Darwin\n"
+            set guifont=Sauce\ Code\ Pro
+        elseif s:unmae =~ "ubuntu"
+            set guifont=Sauce\ Code\ Pro\ Nerd\ Font\ Complete\ 13
+        endif
     else
-        " not x11 (probably Windows)
+        " (probably Windows)
         set guifont=Consolas:h15:cDEFAULT
     endif
     set guioptions=ce
@@ -208,28 +233,18 @@ if has("gui_running")
 else
     colorscheme purplehaze
 endif
-" Font Switching Binds
-if has("gui_running")
-    if has("unix")
-        map <F8> <ESC>:set guifont=Source\ Code\ Pro\ 8<CR>
-        map <F9> <ESC>:set guifont=Source\ Code\ Pro\ 12<CR>
-        map <F10> <ESC>:set guifont=Source\ Code\ Pro\ 16<CR>
-    else
-        map <F8> <ESC>:set guifont=Consolas:h9<CR>
-        map <F9> <ESC>:set guifont=Consolas:h13<CR>
-        map <F10> <ESC>:set guifont=Consolas:h15<CR>
-    endif
-endif
-
 
 
 " ultisnips
 let g:ultisnips_python_style="doxygen"
 " Trigger configuration. Do not use <tab> if you use https://github.com/Valloric/YouCompleteMe.
-let g:UltiSnipsExpandTrigger="<D-CR>"
+let g:UltiSnipsExpandTrigger="<c-h>"
 let g:UltiSnipsJumpForwardTrigger="<c-j>"
 let g:UltiSnipsJumpBackwardTrigger="<c-k>"
 
 " If you want :UltiSnipsEdit to split your window.
 let g:UltiSnipsEditSplit="vertical"
 
+" Enhanced C++ snytax highlighting
+let g:cpp_class_scope_highlight = 1
+let g:cpp_experimental_template_highlight = 1
