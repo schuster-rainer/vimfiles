@@ -33,7 +33,7 @@
 	url = git://github.com/scrooloose/nerdtree.git
 [submodule "bundle/nerdtree-git-plugin"]
 	path = bundle/nerdtree-git-plugin
-	url = git://github.com/nerdtree-git-plugin.git
+	url = git://github.com/Xuyuanp/nerdtree-git-plugin.git
 [submodule "bundle/ultisnip"]
 	path = bundle/ultisnip
 	url = git://github.com/SirVer/ultisnips.git
@@ -121,3 +121,6 @@
 [submodule "bundle/vim-cpp-enhanced-highlight"]
 	path = bundle/vim-cpp-enhanced-highlight
 	url = https://github.com/octol/vim-cpp-enhanced-highlight.git
+[submodule "bundle/vim-rails"]
+	path = bundle/vim-rails
+	url = https://github.com/tpope/vim-rails.git
