@@ -1,1 +1,1 @@
-/Users/rainer/.vimrc
+/home/rainer/.vim/vimrc

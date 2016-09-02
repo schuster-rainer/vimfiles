@@ -12,12 +12,14 @@ filetype plugin indent on " load filetype plugins/indent settings
 filetype plugin on " load filetype plugins
 syntax on " syntax highlighting on
 
+" install a clipboardtool like xsel, :help clipboard
+set clipboard=unnamedplus
 
 set autoindent
 set noerrorbells " don't make noise
 set clipboard+=unnamed " share windows clipboard
 set hidden " you can change buffers (e.g. open an new one) 
-       " without saving the current buffer
+" without saving the current buffer
 set wildmenu " turn on command line completion wild style
 set autowrite
 set history=1000
@@ -30,19 +32,19 @@ set hlsearch "highlight searched for phrases
 set laststatus=2 " always show the status line
 set nolazyredraw " do not redraw while running macros
 set linespace=0 " don't insert any extra pixel lines 
-    " betweens rows
+" betweens rows
 set nolist " don't show real tabs
 set listchars=eol:$,tab:>-,trail:~,extends:>,precedes:< " show whitespace
 set list
 set matchtime=5 " how many tenths of a second to blink 
-                " matching brackets for
+" matching brackets for
 set nostartofline " leave my cursor where it was
 set number " NOTE: turn off line quickfix = 1
 set relativenumber " show numbers 1-10  below and above current
 
 set report=0 " tell us when anything is changed via :...
 set shortmess=aOstT " shortens messages to avoid 
-                    " 'press a key' prompt
+" 'press a key' prompt
 set showcmd " show the command being typed
 set showmatch " show matching brackets
 " set scrolloff=10 " Keep 10 lines (top/bottom) for scope
@@ -51,17 +53,17 @@ set showmatch " show matching brackets
 " Text Formatting / Layout
 set completeopt=menuone,preview 
 set formatoptions=rq " Automatically insert comment leader on return, 
-                     " and let gq format comments
+" and let gq format comments
 set ignorecase " case insensitive by default
 set infercase " case inferred by default
 set smartcase " if there are caps, go case-sensitive
 set expandtab " no real tabs please!
 set shiftwidth=4 " auto-indent amount when using cindent, 
-                 " >>, << and stuff like that
+" >>, << and stuff like that
 set softtabstop=4 " when hitting tab or backspace, how many spaces 
-                  " should a tab be (see expandtab)
+" should a tab be (see expandtab)
 set tabstop=8 " real tabs should be 8, and they will show with 
-              " set list on
+" set list on
 set backspace=indent,eol,start
 set nofoldenable " Turn off folding
 
@@ -88,13 +90,13 @@ let Tlist_Compact_Format = 1 " show small menu
 " let Tlist_Ctags_Cmd = 'D:\shared\tools\ctags58\ctags.exe' " location of ctags
 let Tlist_Enable_Fold_Column = 0 " do show folding tree
 let Tlist_Exist_OnlyWindow = 1 " if you are the last, kill 
-                               " yourself
+" yourself
 let Tlist_File_Fold_Auto_Close = 0 " fold closed other trees
 let Tlist_Sort_Type = "name" " order by 
 let Tlist_Use_Right_Window = 1 " split to the right side
-                               " of the screen
+" of the screen
 let Tlist_WinWidth = 40 " 40 cols wide, so i can (almost always)
-                        " read my functions
+" read my functions
 " Language Specifics
 " just functions and classes please
 let tlist_aspjscript_settings = 'asp;f:function;c:class' 
@@ -167,9 +169,13 @@ au BufRead,BufNewFile *.pl setf perl6
 " ruby standard 2 spaces, always
 au BufRead,BufNewFile *.rb,*.rhtml set shiftwidth=2 
 au BufRead,BufNewFile *.rb,*.rhtml set softtabstop=2 
+" au BufRead,BufNewFile *.rb,*.rhtml,Gemfile,Gemfile.lock set shiftwidth=2
+" au BufRead,BufNewFile *.rb,*.rhtml,Gemfile,Gemfile.lock set softtabstop=2
 au BufRead,BufNewFile *.rb noremap <LOCALLEADER>t <ESC>:Rake<CR>
 au BufRead,BufNewFile *.rb noremap <LOCALLEADER>s <ESC>:.Rake<CR>
 au BufRead,BufNewFile *.rb noremap <LOCALLEADER>a <ESC>:Rake spec<CR>
+au BufRead,BufNewFile *.rb noremap <LOCALLEADER>c <ESC>:Econtroller<CR>
+au BufRead,BufNewFile *.rb noremap <LOCALLEADER>v <ESC>:Eview<CR>
 
 " xml
 let g:xml_syntax_folding=1
@@ -210,28 +216,28 @@ let g:WebDevIconsNerdTreeGitPluginForceValign=1
 
 " GUI
 if has("gui_running")
-    colorscheme purplehaze
-    set columns=85 " perfect size for me
-    if has("unix")
-        let s:uname = system("uname")
-        if s:uname == "Darwin\n"
-            set guifont=Sauce\ Code\ Pro
-        elseif s:unmae =~ "ubuntu"
-            set guifont=Sauce\ Code\ Pro\ Nerd\ Font\ Complete\ 13
-        endif
-    else
-        " (probably Windows)
-        set guifont=Consolas:h15:cDEFAULT
+  colorscheme purplehaze
+  set columns=85 " perfect size for me
+  if has("unix")
+    let s:uname = system("uname")
+    if s:uname == "Darwin\n"
+      set guifont=Sauce\ Code\ Pro
+    elseif s:uname =~ "ubuntu"
+      set guifont=Sauce\ Code\ Pro\ Nerd\ Font\ Complete\ 13
     endif
-    set guioptions=ce
-    "              |||
-    "              ||+-- e use simple dialogs rather than pop-ups
-    "              |+-- c use GUI tabs, not console style tabs
-    "              +-- m use toolbar
-    " set lines=45 " perfect size for me
-    set mousehide " hide the mouse cursor when typing
+  else
+    " (probably Windows)
+    set guifont=Consolas:h15:cDEFAULT
+  endif
+  set guioptions=ce
+  "              |||
+  "              ||+-- e use simple dialogs rather than pop-ups
+  "              |+-- c use GUI tabs, not console style tabs
+  "              +-- m use toolbar
+  " set lines=45 " perfect size for me
+  set mousehide " hide the mouse cursor when typing
 else
-    colorscheme purplehaze
+  colorscheme purplehaze
 endif
 
 
