@@ -145,3 +145,6 @@
 [submodule "bundle/vim-ref"]
 	path = bundle/vim-ref
 	url = https://github.com/thinca/vim-ref.git
+[submodule "bundle/ansible-vim"]
+	path = bundle/ansible-vim
+	url = https://github.com/pearofducks/ansible-vim.git

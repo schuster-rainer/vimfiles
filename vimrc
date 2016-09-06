@@ -220,8 +220,8 @@ if has("gui_running")
   set columns=85 " perfect size for me
   if has("unix")
     let s:uname = system("uname")
-    if s:uname == "Darwin\n"
-      set guifont=Sauce\ Code\ Pro
+    if s:uname == "Darwin"
+      set guifont=Source\ Code\ Pro\ for\ Powerline:h13
     elseif s:uname =~ "ubuntu"
       set guifont=Sauce\ Code\ Pro\ Nerd\ Font\ Complete\ 13
     endif
@@ -254,3 +254,6 @@ let g:UltiSnipsEditSplit="vertical"
 " Enhanced C++ snytax highlighting
 let g:cpp_class_scope_highlight = 1
 let g:cpp_experimental_template_highlight = 1
+
+" ansible-vim
+let g:ansible_extra_syntaxes = "sh.vim ruby.vim"
