@@ -29,6 +29,7 @@ Plug 'godlygeek/csapprox'
 Plug 'kien/ctrlp.vim'
 Plug 'ivalkeen/vim-ctrlp-tjump'
 Plug 'scrooloose/syntastic'
+Plug 'scrooloose/nerdtree'
 Plug 'SirVer/ultisnips'
 Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-surround'
@@ -84,7 +85,8 @@ set matchtime=5   " how many tenths of a second to blink
                   " matching brackets for
 set nostartofline " try leaving the cursor in the same column
                   " when moving rows
-set nonumber      " NOTE: turn off line quickfix = 1
+set number      " NOTE: turn off line quickfix = 1
+set relativenumber " show numbers 1-10  below and above current
 
 set report=2      " set to 0 to tell us when anything is changed via : commands
 set shortmess=aOstT " shortens messages to avoid
@@ -109,6 +111,24 @@ set tabstop=8       " real tabs should be 8, and they will show with
 set backspace=indent,eol,start
 set nofoldenable " Turn off folding
 
+if has("gui_running")
+  set guioptions=ce
+  "              |||
+  "              ||+-- e use simple dialogs rather than pop-ups
+  "              |+-- c use GUI tabs, not console style tabs
+  "              +-- m use toolbar
+   if has("unix")
+    let s:uname = system("uname")
+    if s:uname == "Darwin"
+      set guifont=Source\ Code\ Pro\ for\ Powerline:h13
+    elseif s:uname =~ "ubuntu"
+      set guifont=Sauce\ Code\ Pro\ Nerd\ Font\ Complete\ 13
+    endif
+  else
+    " (probably Windows)
+    set guifont=Consolas:h15:cDEFAULT
+  endif
+endif
 
 " RSpec.vim
 map <Leader>t :call RunCurrentSpecFile()<CR
@@ -117,6 +137,10 @@ map <Leader>l :call RunLastSpec()<CR>
 map <Leader>a :call RunAllSpecs()<CR>
 "let g:rspec_command = "Dispatch rspec {spec}"
 
+" Commentary
+nnoremap <localleader>\ :Commentary<CR>
+vnoremap <localleader>\ :Commentary<CR>
 
 " Ruby bindings
 autocmd FileType ruby setlocal expandtab shiftwidth=2 softtabstop=2
+
