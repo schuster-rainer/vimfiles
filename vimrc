@@ -31,20 +31,22 @@ Plug 'ivalkeen/vim-ctrlp-tjump'
 Plug 'scrooloose/syntastic'
 Plug 'scrooloose/nerdtree'
 Plug 'SirVer/ultisnips'
+Plug 'honza/vim-snippets'
 Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-dispatch'
 Plug 'tpope/vim-fugitive' " git
 Plug 'vim-airline/vim-airline'
 Plug 'Valloric/YouCompleteMe', { 'do': function('BuildYCM') }
+" Plug 'ervandew/supertab'
 " open files with line numbers and jump to them .i.e.  myfile.vim:20
 Plug 'bogado/file-line'
 " ruby
-Plug 'tpope/vim-rake', { 'for': 'ruby' }
-Plug 'tpope/vim-rails', { 'for': 'ruby' }
-Plug 'tpope/vim-bundler', { 'for': 'ruby' }
-Plug 'thoughtbot/vim-rspec', { 'for': 'ruby' }
-Plug 'vim-ruby/vim-ruby', { 'for': 'ruby' }
+Plug 'tpope/vim-rake', { 'for': ['ruby','rails'] }
+Plug 'tpope/vim-rails', { 'for': ['ruby','rails'] }
+Plug 'tpope/vim-bundler', { 'for': ['ruby', 'rails'] }
+Plug 'thoughtbot/vim-rspec', { 'for': ['ruby', 'rails']}
+Plug 'vim-ruby/vim-ruby', { 'for': ['ruby', 'rails']}
 " ansible
 Plug 'pearofducks/ansible-vim'
 " colorschemes
@@ -54,6 +56,7 @@ Plug 'schuster-rainer/vim-ultisnippets', { 'dir': '~/.vim/UltiSnips', 'do': './i
 
 call plug#end()            " required
 filetype plugin indent on    " required
+
 
 " to install the plugins run :PluginInstall
 
@@ -144,3 +147,40 @@ vnoremap <localleader>\ :Commentary<CR>
 " Ruby bindings
 autocmd FileType ruby setlocal expandtab shiftwidth=2 softtabstop=2
 
+" The Silver Searcher
+if executable('ag')
+  " Use ag over grep
+  set grepprg=ag\ --nogroup\ --nocolor
+
+  " Use ag in CtrlP for listing files. Lightning fast and respects .gitignore
+  let g:ctrlp_user_command = 'ag %s -l --nocolor -g ""'
+
+  " ag is fast enough that CtrlP doesn't need to cache
+  let g:ctrlp_use_caching = 0
+endif
+
+" make YCM compatible with UltiSnips (using supertab)
+" let g:ycm_key_list_select_completion = ['<C-n>', '<Down>']
+" let g:ycm_key_list_previous_completion = ['<C-p>', '<Up>']
+"let g:SuperTabDefaultCompletionType = '<C-n>'
+let g:ycm_use_ultisnips_completer = 1
+let g:ycm_semantic_triggers =  {
+  \   'c' : ['->', '.'],
+  \   'objc' : ['->', '.', 're!\[[_a-zA-Z]+\w*\s', 're!^\s*[^\W\d]\w*\s',
+  \             're!\[.*\]\s'],
+  \   'ocaml' : ['.', '#'],
+  \   'cpp,objcpp' : ['->', '.', '::'],
+  \   'perl' : ['->'],
+  \   'php' : ['->', '::'],
+  \   'cs,java,javascript,typescript,d,python,perl6,scala,vb,elixir,go' : ['.'],
+  \   'ruby' : ['.', '::'],
+  \   'lua' : ['.', ':'],
+  \   'erlang' : [':'],
+  \ }
+
+
+let g:UltiSnipsExpandTrigger="<c-h>"
+let g:UltiSnipsJumpForwardTrigger="<c-j>"
+let g:UltiSnipsJumpBackwardTrigger="<c-k>"
+let g:UltiSnipsEnableSnipMate=0 " use UltiSnips snippets
+let g:UltiSnipsSnippetDirectories = ['~/.vim/UltiSnips', 'UltiSnips']
