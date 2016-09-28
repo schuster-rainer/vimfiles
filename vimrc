@@ -47,6 +47,11 @@ Plug 'tpope/vim-rails', { 'for': ['ruby','rails'] }
 Plug 'tpope/vim-bundler', { 'for': ['ruby', 'rails'] }
 Plug 'thoughtbot/vim-rspec', { 'for': ['ruby', 'rails']}
 Plug 'vim-ruby/vim-ruby', { 'for': ['ruby', 'rails']}
+Plug 'kchmck/vim-coffee-script', { 'for': ['ruby', 'rails', 'coffee']}
+"javascript
+Plug 'pangloss/vim-javascript', { 'for': ['javascript']}
+Plug 'mxw/vim-jsx', { 'for': ['javascript', 'javascript.jsx']}
+Plug 'jaxbot/syntastic-react', { 'for': ['javascript', 'javascript.jsx']}
 " ansible
 Plug 'pearofducks/ansible-vim'
 " colorschemes
@@ -144,20 +149,30 @@ map <Leader>a :call RunAllSpecs()<CR>
 nnoremap <localleader>\ :Commentary<CR>
 vnoremap <localleader>\ :Commentary<CR>
 
-" Ruby bindings
-autocmd FileType ruby setlocal expandtab shiftwidth=2 softtabstop=2
+" whitespace  bindings
+autocmd FileType ruby,javascript,html setlocal expandtab shiftwidth=2 softtabstop=2
+
+
+
+" ctrlp
+" let g:ctrlp_match_window = 'bottom,order:btt,min:1,max:10,results:10'
+" let g:ctrlp_match_window = 'bottom,order:btt'
+    let g:ctrlp_match_window = 'bottom,order:btt,min:1,max:10,results:20'
+set wildignore+=*/.git/*,*/.hg/*,*/.svn/*,*/node_modules/*
 
 " The Silver Searcher
 if executable('ag')
   " Use ag over grep
-  set grepprg=ag\ --nogroup\ --nocolor
+  set grepprg=ag\ --nogroup\ --nocolor\ --hidden
 
   " Use ag in CtrlP for listing files. Lightning fast and respects .gitignore
-  let g:ctrlp_user_command = 'ag %s -l --nocolor -g ""'
+  let g:ctrlp_user_command = 'ag %s -l --hidden --nocolor -g ""'
 
   " ag is fast enough that CtrlP doesn't need to cache
   let g:ctrlp_use_caching = 0
 endif
+
+
 
 " make YCM compatible with UltiSnips (using supertab)
 " let g:ycm_key_list_select_completion = ['<C-n>', '<Down>']
@@ -184,3 +199,14 @@ let g:UltiSnipsJumpForwardTrigger="<c-j>"
 let g:UltiSnipsJumpBackwardTrigger="<c-k>"
 let g:UltiSnipsEnableSnipMate=0 " use UltiSnips snippets
 let g:UltiSnipsSnippetDirectories = ['~/.vim/UltiSnips', 'UltiSnips']
+
+" react
+let g:jsx_ext_required = 0 " Allow JSX in normal JS files
+
+" syntastic
+let g:syntastic_javascript_checkers = ['jsxhint']
+let g:syntastic_javascript_jsxhint_exec = 'jsx-jshint-wrapper'
+let g:syntastic_always_populate_loc_list = 1
+let g:syntastic_auto_loc_list = 1
+let g:syntastic_check_on_open = 1
+let g:syntastic_check_on_wq = 0
