@@ -52,12 +52,18 @@ Plug 'kchmck/vim-coffee-script', { 'for': ['ruby', 'rails', 'coffee']}
 Plug 'pangloss/vim-javascript', { 'for': ['javascript']}
 Plug 'mxw/vim-jsx', { 'for': ['javascript', 'javascript.jsx']}
 Plug 'jaxbot/syntastic-react', { 'for': ['javascript', 'javascript.jsx']}
-" ansible
-Plug 'pearofducks/ansible-vim'
+" tags
+Plug 'majutsushi/tagbar'
+Plug 'xolox/vim-easytags'
+Plug 'xolox/vim-misc'
 " colorschemes
 Plug 'schuster-rainer/vim-theme-purplehaze'
 Plug 'dracula/vim'
 Plug 'schuster-rainer/vim-ultisnippets', { 'dir': '~/.vim/UltiSnips', 'do': './install.sh'}
+" devops
+Plug 'hashivim/vim-terraform'
+Plug 'MicahElliott/Rocannon'
+Plug 'pearofducks/ansible-vim'
 
 call plug#end()            " required
 filetype plugin indent on    " required
@@ -119,22 +125,28 @@ set tabstop=8       " real tabs should be 8, and they will show with
 set backspace=indent,eol,start
 set nofoldenable " Turn off folding
 
+if !exists("g:os")
+    if has("win64") || has("win32") || has("win16")
+        let g:os = "Windows"
+    else
+        let g:os = substitute(system('uname'), '\n', '', '')
+    endif
+endif
+
 if has("gui_running")
   set guioptions=ce
   "              |||
   "              ||+-- e use simple dialogs rather than pop-ups
   "              |+-- c use GUI tabs, not console style tabs
   "              +-- m use toolbar
-   if has("unix")
-    let s:uname = system("uname")
-    if s:uname == "Darwin"
+  if has("unix")
+    if g:os == "Darwin"
       set guifont=Source\ Code\ Pro\ for\ Powerline:h13
-    elseif s:uname =~ "ubuntu"
+    elseif g:os  == "Linux"
       set guifont=Sauce\ Code\ Pro\ Nerd\ Font\ Complete\ 13
+    elseif g:os == "Windows"
+      set guifont=Consolas:h15:cDEFAULT
     endif
-  else
-    " (probably Windows)
-    set guifont=Consolas:h15:cDEFAULT
   endif
 endif
 
@@ -152,13 +164,27 @@ vnoremap <localleader>\ :Commentary<CR>
 " whitespace  bindings
 autocmd FileType ruby,javascript,html setlocal expandtab shiftwidth=2 softtabstop=2
 
+" ansible
+autocmd FileType yaml setlocal expandtab shiftwidth=2 softtabstop=2
+autocmd BufRead,BufWrite,BufNewFile *.yml,*.yaml,*.j2 set ft=ansible
+let g:ansible_attribute_highlight = "ad"
+let g:ansible_extra_syntaxes = "sh.vim ruby.vim"
+let g:ansible_name_highlight = 'd' " 'd'im or 'b'righten
+let g:ansible_extra_keywords_highlight = 1
+"rocannon
+let g:rocannon_ansible_command = 'ansible-playbook -i inventory/local local_dev.yml'
+let g:rocannon_open_action = 'edit'
+let g:rocannon_enable_maps = 1
+let g:rocannon_bypass_colorscheme = 1
 
 
 " ctrlp
 " let g:ctrlp_match_window = 'bottom,order:btt,min:1,max:10,results:10'
 " let g:ctrlp_match_window = 'bottom,order:btt'
-    let g:ctrlp_match_window = 'bottom,order:btt,min:1,max:10,results:20'
+let g:ctrlp_match_window = 'bottom,order:btt,min:1,max:10,results:20'
 set wildignore+=*/.git/*,*/.hg/*,*/.svn/*,*/node_modules/*
+nnoremap <leader>, :CtrlPBufTagAll<CR>
+nnoremap <leader>. :CtrlPTag<CR>
 
 " The Silver Searcher
 if executable('ag')
@@ -210,3 +236,6 @@ let g:syntastic_always_populate_loc_list = 1
 let g:syntastic_auto_loc_list = 1
 let g:syntastic_check_on_open = 1
 let g:syntastic_check_on_wq = 0
+
+"easytags
+let g:easytags_auto_highlight = 0
