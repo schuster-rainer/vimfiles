@@ -59,17 +59,27 @@ Plug 'xolox/vim-misc'
 " colorschemes
 Plug 'schuster-rainer/vim-theme-purplehaze'
 Plug 'dracula/vim'
-Plug 'schuster-rainer/vim-ultisnippets', { 'dir': '~/.vim/UltiSnips', 'do': './install.sh'}
+Plug 'altercation/vim-colors-solarized'
+Plug 'schuster-rainer/vim-ultisnippets', { 'do': './install.sh'}
 " devops
 Plug 'hashivim/vim-terraform'
-Plug 'MicahElliott/Rocannon'
-Plug 'pearofducks/ansible-vim'
+Plug 'MicahElliott/Rocannon', { 'for': ['ansible', 'yaml', 'yml', 'ansible_template']}
+Plug 'pearofducks/ansible-vim', { 'for': ['ansible', 'yaml', 'yml', 'ansible_template'], 'do': 'python UltiSnips/generate.py'}
+
+if has('nvim')
+    Plug 'bfredl/nvim-ipy', { 'do': ':UpdateRemotePlugins' }
+    Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+else
+    Plug 'ivanov/vim-ipython'
+endif
+
 
 call plug#end()            " required
 filetype plugin indent on    " required
 
-
 " to install the plugins run :PluginInstall
+
+let &runtimepath.=','.escape(fnamemodify('.',':p'), '\,')
 
 
 " generanl settings
@@ -166,16 +176,17 @@ autocmd FileType ruby,javascript,html setlocal expandtab shiftwidth=2 softtabsto
 
 " ansible
 autocmd FileType yaml setlocal expandtab shiftwidth=2 softtabstop=2
-autocmd BufRead,BufWrite,BufNewFile *.yml,*.yaml,*.j2 set ft=ansible
+autocmd BufRead,BufNewFile *.yml,*.yaml set ft=ansible
+autocmd BufRead,BufNewFile *.j2 set ft=ansible_template
 let g:ansible_attribute_highlight = "ad"
 let g:ansible_extra_syntaxes = "sh.vim ruby.vim"
 let g:ansible_name_highlight = 'd' " 'd'im or 'b'righten
 let g:ansible_extra_keywords_highlight = 1
-"rocannon
-let g:rocannon_ansible_command = 'ansible-playbook -i inventory/local local_dev.yml'
+let g:rocannon_ansible_command = 'ansible-playbook -i inventory/local site.yml'
 let g:rocannon_open_action = 'edit'
 let g:rocannon_enable_maps = 1
 let g:rocannon_bypass_colorscheme = 1
+autocmd FileType ansible setlocal commentstring=#\ %s
 
 
 " ctrlp
@@ -224,7 +235,7 @@ let g:UltiSnipsExpandTrigger="<c-h>"
 let g:UltiSnipsJumpForwardTrigger="<c-j>"
 let g:UltiSnipsJumpBackwardTrigger="<c-k>"
 let g:UltiSnipsEnableSnipMate=0 " use UltiSnips snippets
-let g:UltiSnipsSnippetDirectories = ['~/.vim/UltiSnips', 'UltiSnips']
+" let g:UltiSnipsSnippetDirectories = ['~/.vim/UltiSnips', 'UltiSnips']
 
 " react
 let g:jsx_ext_required = 0 " Allow JSX in normal JS files
