@@ -1,3 +1,6 @@
-bundle/
+plugged/
 .netrwhist
 .DS_store
+autoload/spaceneovim.vim
+spaceneovim-layers
+
