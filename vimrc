@@ -1,9 +1,9 @@
-" for vim use
-"curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
-"     https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-" and nvim
-"curl -fLo ~/.config/nvim/autoload/plug.vim --create-dirs \
-"     https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+" vim-plug setup
+" curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
+"     https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim:w
+"
+" when running inside nvim make sure to call :CheckHealth
+"
 set nocompatible              " be iMproved, required
 filetype off                  " required
 
@@ -28,15 +28,18 @@ endfunction
 Plug 'godlygeek/csapprox'
 Plug 'kien/ctrlp.vim'
 Plug 'ivalkeen/vim-ctrlp-tjump'
+Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'scrooloose/syntastic'
 Plug 'scrooloose/nerdtree'
 Plug 'SirVer/ultisnips'
+" Plug '~/dev/ultisnips'
 Plug 'honza/vim-snippets'
 Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-dispatch'
 Plug 'tpope/vim-fugitive' " git
 Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
 Plug 'Valloric/YouCompleteMe', { 'do': function('BuildYCM') }
 " Plug 'ervandew/supertab'
 " open files with line numbers and jump to them .i.e.  myfile.vim:20
@@ -49,9 +52,8 @@ Plug 'thoughtbot/vim-rspec', { 'for': ['ruby', 'rails']}
 Plug 'vim-ruby/vim-ruby', { 'for': ['ruby', 'rails']}
 Plug 'kchmck/vim-coffee-script', { 'for': ['ruby', 'rails', 'coffee']}
 "javascript
-Plug 'pangloss/vim-javascript', { 'for': ['javascript']}
-Plug 'mxw/vim-jsx', { 'for': ['javascript', 'javascript.jsx']}
 Plug 'jaxbot/syntastic-react', { 'for': ['javascript', 'javascript.jsx']}
+Plug 'pangloss/vim-javascript'
 " tags
 Plug 'majutsushi/tagbar'
 Plug 'xolox/vim-easytags'
@@ -60,11 +62,42 @@ Plug 'xolox/vim-misc'
 Plug 'schuster-rainer/vim-theme-purplehaze'
 Plug 'dracula/vim'
 Plug 'altercation/vim-colors-solarized'
+Plug 'altercation/vim-colors-solarized'
+Plug 'flazz/vim-colorschemes'
 Plug 'schuster-rainer/vim-ultisnippets', { 'do': './install.sh'}
 " devops
 Plug 'hashivim/vim-terraform'
 Plug 'MicahElliott/Rocannon', { 'for': ['ansible', 'yaml', 'yml', 'ansible_template']}
 Plug 'pearofducks/ansible-vim', { 'for': ['ansible', 'yaml', 'yml', 'ansible_template'], 'do': 'python UltiSnips/generate.py'}
+"tmux
+Plug 'tpope/vim-tbone'
+Plug 'benmills/vimux'
+" Plug 'jgdavey/tslime.vim'
+Plug 'christoomey/vim-tmux-navigator'
+
+" lisp like
+Plug 'hylang/vim-hy'
+Plug 'tpope/vim-fireplace'
+Plug 'guns/vim-clojure-static'
+Plug 'guns/vim-clojure-highlight'
+
+" elixir
+Plug 'slashmili/alchemist.vim'
+Plug 'elixir-lang/vim-elixir'
+Plug 'thinca/vim-ref'
+if has('nvim')
+    Plug 'awetzel/elixir.nvim', { 'do': 'yes \| ./install.sh' }
+endif
+Plug 'mattn/webapi-vim'
+Plug 'lucidstack/hex.vim'
+
+" Documentation
+Plug 'rizzatti/dash.vim'
+
+" testing 
+Plug 'janko-m/vim-test'
+
+Plug 'fidian/hexmode'
 
 if has('nvim')
     Plug 'bfredl/nvim-ipy', { 'do': ':UpdateRemotePlugins' }
@@ -81,6 +114,11 @@ filetype plugin indent on    " required
 
 let &runtimepath.=','.escape(fnamemodify('.',':p'), '\,')
 
+if !has('gui')
+    set fillchars+=vert:\ 
+endif
+
+set clipboard=unnamed
 
 " generanl settings
 set wildmenu     " show completions in Statusbar
@@ -92,7 +130,7 @@ set autowrite    " autowrite buffer on specific commands befe
 
 " UI settings
 
-colorscheme dracula
+colorscheme Benokai
 
 set cursorcolumn " highlight the current column
 set cursorline   " highlight current line
@@ -101,8 +139,6 @@ set hlsearch     " highlight searched for phrases
 set laststatus=2 " always show the status line
 set nolazyredraw " do not redraw while running macros
 set linespace=0  " don't insert any extra pixel lines
-                 " betweens rows
-set nolist       " hide unprintable chars. see settings below (listchars)
 set listchars=eol:$,tab:>-,trail:~,extends:>,precedes:< " show whitespace
 set list
 set matchtime=5   " how many tenths of a second to blink
@@ -160,19 +196,32 @@ if has("gui_running")
   endif
 endif
 
-" RSpec.vim
-map <Leader>t :call RunCurrentSpecFile()<CR
-map <Leader>s :call RunNearestSpec()<CR>
-map <Leader>l :call RunLastSpec()<CR>
-map <Leader>a :call RunAllSpecs()<CR>
-"let g:rspec_command = "Dispatch rspec {spec}"
+
+let mapleader=";"
+let maplocalleader=","
 
 " Commentary
-nnoremap <localleader>\ :Commentary<CR>
-vnoremap <localleader>\ :Commentary<CR>
+nnoremap \\ :Commentary<CR>
+vnoremap \\ :Commentary<CR>
 
 " whitespace  bindings
 autocmd FileType ruby,javascript,html setlocal expandtab shiftwidth=2 softtabstop=2
+
+" vim-test
+let test#strategy = 'vimux'
+nmap <silent> <leader>s :TestNearest<CR>
+nmap <silent> <leader>f :TestFile<CR>
+nmap <silent> <leader>a :TestSuite<CR>
+nmap <silent> <leader>l :TestLast<CR>
+nmap <silent> <leader>g :TestVisit<CR>
+
+autocmd BufWritePost *_test.exs,*_spec.rb :TestNearest
+
+let g:test#ruby#rspec#executable = 'rspec'
+
+" elixir
+let g:alchemist#elixir_erlang_src = "/usr/local/share/src"
+" autocmd FileType elixir nnoremap <localleader>s :call VimuxRunCommand("clear; mix test --only line:" . line(".") . " " . bufname("%"))<CR>
 
 " ansible
 autocmd FileType yaml setlocal expandtab shiftwidth=2 softtabstop=2
@@ -192,7 +241,8 @@ autocmd FileType ansible setlocal commentstring=#\ %s
 " ctrlp
 " let g:ctrlp_match_window = 'bottom,order:btt,min:1,max:10,results:10'
 " let g:ctrlp_match_window = 'bottom,order:btt'
-let g:ctrlp_match_window = 'bottom,order:btt,min:1,max:10,results:20'
+" let g:ctrlp_match_window = 'bottom,order:btt,min:1,max:10,results:20'
+let g:ctrlp_regexp = 0
 set wildignore+=*/.git/*,*/.hg/*,*/.svn/*,*/node_modules/*
 nnoremap <leader>, :CtrlPBufTagAll<CR>
 nnoremap <leader>. :CtrlPTag<CR>
@@ -203,13 +253,11 @@ if executable('ag')
   set grepprg=ag\ --nogroup\ --nocolor\ --hidden
 
   " Use ag in CtrlP for listing files. Lightning fast and respects .gitignore
-  let g:ctrlp_user_command = 'ag %s -l --hidden --nocolor -g ""'
+  let g:ctrlp_user_command = 'ag %s -l --nocolor -g ""'
 
   " ag is fast enough that CtrlP doesn't need to cache
   let g:ctrlp_use_caching = 0
 endif
-
-
 
 " make YCM compatible with UltiSnips (using supertab)
 " let g:ycm_key_list_select_completion = ['<C-n>', '<Down>']
@@ -236,6 +284,7 @@ let g:UltiSnipsJumpForwardTrigger="<c-j>"
 let g:UltiSnipsJumpBackwardTrigger="<c-k>"
 let g:UltiSnipsEnableSnipMate=0 " use UltiSnips snippets
 " let g:UltiSnipsSnippetDirectories = ['~/.vim/UltiSnips', 'UltiSnips']
+let g:UltiSnipsSnippetsDir = '~/.vim/bundle/vim-ultisnippets/UltiSnips'
 
 " react
 let g:jsx_ext_required = 0 " Allow JSX in normal JS files
@@ -243,10 +292,28 @@ let g:jsx_ext_required = 0 " Allow JSX in normal JS files
 " syntastic
 let g:syntastic_javascript_checkers = ['jsxhint']
 let g:syntastic_javascript_jsxhint_exec = 'jsx-jshint-wrapper'
-let g:syntastic_always_populate_loc_list = 1
-let g:syntastic_auto_loc_list = 1
-let g:syntastic_check_on_open = 1
+let g:syntastic_always_populate_loc_list = 0
+let g:syntastic_auto_loc_list = 0
+let g:syntastic_check_on_open = 0
 let g:syntastic_check_on_wq = 0
 
 "easytags
 let g:easytags_auto_highlight = 0
+" autocmd BufWritePost * exe ":UpdateTags"
+
+"airline
+if !exists('g:airline_symbols')
+    let g:airline_symbols = {}
+  endif
+let g:airline_powerline_fonts = 1
+let g:airline_symbols.space = "\ua0"
+let g:airline_theme='lucius'
+
+" function! VimuxSlime()
+"   call VimuxSendText(@v)
+"   call VimuxSendKeys("Enter")
+"  endfunction
+
+" send visual to tmux
+vmap <LocalLeader>vs "vy :call VimuxSendText(@v)<CR>
+
