@@ -105,6 +105,17 @@ else
     Plug 'ivanov/vim-ipython'
 endif
 
+" writing
+Plug 'junegunn/limelight.vim'
+Plug 'junegunn/goyo.vim'
+Plug 'beloglazov/vim-online-thesaurus'
+Plug 'junegunn/vim-easy-align'
+Plug 'robertbasic/vim-hugo-helper'
+Plug 'cespare/vim-toml'
+
+" diffing
+Plug 'will133/vim-dirdiff'
+
 
 call plug#end()            " required
 filetype plugin indent on    " required
