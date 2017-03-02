@@ -219,6 +219,15 @@ autocmd FileType ruby,javascript,html setlocal expandtab shiftwidth=2 softtabsto
 
 " vim-test
 let test#strategy = 'vimux'
+" relative path
+let test#filename_modifier = ':.' 
+"let g:test#ruby#rspec#executable = 'rspec'
+
+" let g:test#ruby#rspec#options = {
+"             \ 'nearest': '--format documentation',
+"             \ 'file':    '--format documentation',
+"             \}
+
 nmap <silent> <leader>s :TestNearest<CR>
 nmap <silent> <leader>f :TestFile<CR>
 nmap <silent> <leader>a :TestSuite<CR>
@@ -227,7 +236,13 @@ nmap <silent> <leader>g :TestVisit<CR>
 
 autocmd BufWritePost *_test.exs,*_spec.rb :TestNearest
 
-let g:test#ruby#rspec#executable = 'rspec'
+" function! VagrantTransform(cmd) abort
+"     let vagrant_project = get(matchlist(s:cat('Vagrantfile'), '\vconfig\.vm.synced_folder ["''].+[''"], ["''](.+)[''"]'), 1)
+"     return 'vagrant ssh --command '.shellescape('cd '.vagrant_project.'; '.a:cmd)
+" endfunction
+
+" let g:test#custom_transformations = {'vagrant': function('VagrantTransform')}
+" let g:test#transformation = 'vagrant'
 
 " elixir
 let g:alchemist#elixir_erlang_src = "/usr/local/share/src"
