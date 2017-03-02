@@ -70,6 +70,7 @@ Plug 'schuster-rainer/vim-ultisnippets', { 'do': './install.sh'}
 Plug 'hashivim/vim-terraform'
 Plug 'MicahElliott/Rocannon', { 'for': ['ansible', 'yaml', 'yml', 'ansible_template']}
 Plug 'pearofducks/ansible-vim', { 'for': ['ansible', 'yaml', 'yml', 'ansible_template'], 'do': 'python UltiSnips/generate.py'}
+Plug 'ekalinin/Dockerfile.vim'
 "tmux
 Plug 'tpope/vim-tbone'
 Plug 'benmills/vimux'
@@ -91,9 +92,6 @@ if has('nvim')
 endif
 Plug 'mattn/webapi-vim'
 Plug 'lucidstack/hex.vim'
-
-" Documentation
-Plug 'rizzatti/dash.vim'
 
 " testing 
 Plug 'janko-m/vim-test'
