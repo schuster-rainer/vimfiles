@@ -25,12 +25,32 @@ endfunction
 
 " Keep Plugin commands between vundle#begin/end.k
 " approximate to console colors from any colorscheme
-Plug 'godlygeek/csapprox'
+" No longer needed! neovim and tmux with iterm support true color
+" see termguicolors https://deductivelabs.com/en/2016/03/using-true-color-vim-tmux/
+" Plug 'godlygeek/csapprox'
 Plug 'kien/ctrlp.vim'
 Plug 'ivalkeen/vim-ctrlp-tjump'
+" ctrlp
+" let g:ctrlp_match_window = 'bottom,order:btt,min:1,max:10,results:10'
+" let g:ctrlp_match_window = 'bottom,order:btt'
+" let g:ctrlp_match_window = 'bottom,order:btt,min:1,max:10,results:20'
+let g:ctrlp_regexp = 0
+set wildignore+=*/.git/*,*/.hg/*,*/.svn/*,*/node_modules/*
+nnoremap <leader>, :CtrlPBufTagAll<CR>
+nnoremap <leader>. :CtrlPTag<CR>
+" use fzf instead
+" let g:loaded_ctrlp = 1
+" nnoremap <C-p> :Files<CR>
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
 Plug 'scrooloose/syntastic'
+" Plug 'mtscout6/syntastic-local-eslint.vim'
+let g:syntastic_javascript_checkers = ['yarn run eslint_d']
+let g:syntastic_javascript_eslint_exec = "yarn run eslint_d"
+let g:syntastic_always_populate_loc_list = 0
+let g:syntastic_auto_loc_list = 1
+let g:syntastic_check_on_open = 1
+let g:syntastic_check_on_wq = 1
 Plug 'scrooloose/nerdtree'
 Plug 'SirVer/ultisnips'
 " Plug '~/dev/ultisnips'
@@ -38,11 +58,8 @@ Plug 'honza/vim-snippets'
 Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-dispatch'
+
 Plug 'tpope/vim-fugitive' " git
-Plug 'vim-airline/vim-airline'
-Plug 'vim-airline/vim-airline-themes'
-Plug 'Valloric/YouCompleteMe', { 'do': function('BuildYCM') }
-" Plug 'ervandew/supertab'
 " open files with line numbers and jump to them .i.e.  myfile.vim:20
 Plug 'bogado/file-line'
 " ruby
@@ -52,20 +69,41 @@ Plug 'tpope/vim-bundler', { 'for': ['ruby', 'rails'] }
 Plug 'thoughtbot/vim-rspec', { 'for': ['ruby', 'rails']}
 Plug 'vim-ruby/vim-ruby', { 'for': ['ruby', 'rails']}
 Plug 'kchmck/vim-coffee-script', { 'for': ['ruby', 'rails', 'coffee']}
+Plug 'alexgenco/neovim-ruby'
 "javascript
 Plug 'jaxbot/syntastic-react', { 'for': ['javascript', 'javascript.jsx']}
 Plug 'pangloss/vim-javascript'
+Plug 'maxmellon/vim-jsx-pretty'
+Plug 'elzr/vim-json'
+Plug 'moll/vim-node'
+Plug 'flowtype/vim-flow'
+
 " tags
 Plug 'majutsushi/tagbar'
 Plug 'xolox/vim-easytags'
 Plug 'xolox/vim-misc'
 " colorschemes
 Plug 'schuster-rainer/vim-theme-purplehaze'
+Plug 'kristijanhusak/vim-hybrid-material'
 Plug 'dracula/vim'
 Plug 'altercation/vim-colors-solarized'
-Plug 'altercation/vim-colors-solarized'
 Plug 'flazz/vim-colorschemes'
+Plug 'zcodes/vim-colors-basic'
 Plug 'schuster-rainer/vim-ultisnippets', { 'do': './install.sh'}
+" ui
+Plug 'ryanoasis/vim-devicons'
+Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
+if !exists('g:airline_symbols')
+    let g:airline_symbols = {}
+endif
+let g:airline_powerline_fonts = 1
+" let g:airline_symbols.space = "\ua0"
+" let g:airline_theme='tomorrow'
+" let g:airline_theme='silver'
+let g:airline_theme='lucius'
+let g:airline#extensions#tabline#enabled = 0
+let g:airline#extensions#tmuxline#enabled = 0
 " devops
 Plug 'hashivim/vim-terraform'
 Plug 'MicahElliott/Rocannon', { 'for': ['ansible', 'yaml', 'yml', 'ansible_template']}
@@ -74,6 +112,8 @@ Plug 'ekalinin/Dockerfile.vim'
 "tmux
 Plug 'tpope/vim-tbone'
 Plug 'benmills/vimux'
+" send visual to tmux
+vmap <LocalLeader>vs "vy :call VimuxSendText(@v)<CR>
 " Plug 'jgdavey/tslime.vim'
 Plug 'christoomey/vim-tmux-navigator'
 
@@ -90,6 +130,7 @@ Plug 'thinca/vim-ref'
 if has('nvim')
     Plug 'awetzel/elixir.nvim', { 'do': 'yes \| ./install.sh' }
 endif
+
 Plug 'mattn/webapi-vim'
 Plug 'lucidstack/hex.vim'
 
@@ -102,8 +143,13 @@ if has('nvim')
     Plug 'bfredl/nvim-ipy', { 'do': ':UpdateRemotePlugins' }
     Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
 else
+    Plug 'Valloric/YouCompleteMe', { 'do': function('BuildYCM') }
     Plug 'ivanov/vim-ipython'
 endif
+
+Plug 'ervandew/supertab'
+let g:SuperTabDefaultCompletionType = "<c-n>" " Make the tabing on completion menu go from top to bottom
+let g:SuperTabClosePreviewOnPopupClose = 1 " Close the preview when completion ends
 
 " writing
 Plug 'junegunn/limelight.vim'
@@ -116,6 +162,19 @@ Plug 'cespare/vim-toml'
 " diffing
 Plug 'will133/vim-dirdiff'
 
+" go
+Plug 'fatih/vim-go'
+Plug 'dgryski/vim-godef'
+
+" doc
+Plug 'Shougo/echodoc.vim'
+
+" saving
+Plug 'https://github.com/907th/vim-auto-save'
+let g:auto_save = 1
+let g:auto_save_write_all_buffers = 1
+
+Plug 'https://github.com/edkolev/tmuxline.vim'
 
 call plug#end()            " required
 filetype plugin indent on    " required
@@ -140,7 +199,7 @@ set autowrite    " autowrite buffer on specific commands befe
 
 " UI settings
 
-colorscheme Benokai
+" highlight Normal ctermfg=251 ctermbg=235
 
 set cursorcolumn " highlight the current column
 set cursorline   " highlight current line
@@ -189,6 +248,10 @@ if !exists("g:os")
     endif
 endif
 
+if has("termguicolors")
+    set termguicolors
+endif
+
 if has("gui_running")
   set guioptions=ce
   "              |||
@@ -219,14 +282,18 @@ autocmd FileType ruby,javascript,html setlocal expandtab shiftwidth=2 softtabsto
 
 " vim-test
 let test#strategy = 'vimux'
-" relative path
-let test#filename_modifier = ':.' 
-"let g:test#ruby#rspec#executable = 'rspec'
-
-" let g:test#ruby#rspec#options = {
-"             \ 'nearest': '--format documentation',
-"             \ 'file':    '--format documentation',
-"             \}
+let test#filename_modifier = ':.'
+" let test#ruby#minitest#file_pattern = '_spec\.rb'
+let test#javascript#mocha#file_pattern = '__NULL__'
+let test#javascript#jest#file_pattern = '\.test\.js'
+" let test#javascript#runner = 'yarn run test'
+let g:test#runner_commands = ['Minitest', 'RSpec', 'Jest']
+let test#ruby#minitest#options = '--verbose --rg'
+" let g:test#ruby#rspec#executable = 'bundle exec rails '
+let g:test#ruby#rspec#options = {
+            \ 'nearest': '--format documentation --color',
+            \ 'file':    '--format documentation --color --fail-fast',
+            \}
 
 nmap <silent> <leader>s :TestNearest<CR>
 nmap <silent> <leader>f :TestFile<CR>
@@ -263,16 +330,6 @@ let g:rocannon_bypass_colorscheme = 1
 autocmd FileType ansible setlocal commentstring=#\ %s
 
 
-" ctrlp
-" let g:ctrlp_match_window = 'bottom,order:btt,min:1,max:10,results:10'
-" let g:ctrlp_match_window = 'bottom,order:btt'
-" let g:ctrlp_match_window = 'bottom,order:btt,min:1,max:10,results:20'
-let g:ctrlp_regexp = 0
-set wildignore+=*/.git/*,*/.hg/*,*/.svn/*,*/node_modules/*
-nnoremap <leader>, :CtrlPBufTagAll<CR>
-nnoremap <leader>. :CtrlPTag<CR>
-
-
 if executable('rg')
     " --column: Show column number
     " --line-number: Show line number
@@ -285,22 +342,22 @@ if executable('rg')
     " --glob: Additional conditions for search (in this case ignore everything in the .git/ folder)
     " --color: Search color options
     command! -bang -nargs=* Find call fzf#vim#grep('rg --column --line-number --no-heading --fixed-strings --ignore-case --no-ignore --hidden --follow --glob "!.git/*" --color "always" '.shellescape(<q-args>), 1, <bang>0)
-  set grepprg=rg\ --vimgrep
-  let g:ctrlp_user_command = 'rg %s --files --hidden --color=never --glob "!.git/*"'
-  let g:ctrlp_use_caching = 0
+    set grepprg=rg\ --vimgrep
+    let g:ctrlp_user_command = 'rg %s --files --hidden --color=never --glob "!.git/*"'
+    let g:ctrlp_use_caching = 0
+
+elseif  executable('ag')
+    "The Silver Searcher
+    " Use ag over grep
+    set grepprg=ag\ --nogroup\ --nocolor\ --hidden
+
+    " Use ag in CtrlP for listing files. Lightning fast and respects .gitignore
+    let g:ctrlp_user_command = 'ag %s -l --nocolor -g ""'
+
+    " ag is fast enough that CtrlP doesn't need to cache
+    let g:ctrlp_use_caching = 0
 endif
 
-" The Silver Searcher
-" if executable('ag')
-"   " Use ag over grep
-"   set grepprg=ag\ --nogroup\ --nocolor\ --hidden
-
-"   " Use ag in CtrlP for listing files. Lightning fast and respects .gitignore
-"   let g:ctrlp_user_command = 'ag %s -l --nocolor -g ""'
-
-"   " ag is fast enough that CtrlP doesn't need to cache
-"   let g:ctrlp_use_caching = 0
-" endif
 
 " make YCM compatible with UltiSnips (using supertab)
 " let g:ycm_key_list_select_completion = ['<C-n>', '<Down>']
@@ -322,41 +379,131 @@ let g:ycm_semantic_triggers =  {
   \ }
 
 
-let g:UltiSnipsExpandTrigger="<c-h>"
-let g:UltiSnipsJumpForwardTrigger="<c-j>"
-let g:UltiSnipsJumpBackwardTrigger="<c-k>"
+" let g:UltiSnipsExpandTrigger="<c-h>"
+" let g:UltiSnipsJumpForwardTrigger="<c-j>"
+" let g:UltiSnipsJumpBackwardTrigger="<c-k>"
 let g:UltiSnipsEnableSnipMate=0 " use UltiSnips snippets
 " let g:UltiSnipsSnippetDirectories = ['~/.vim/UltiSnips', 'UltiSnips']
 let g:UltiSnipsSnippetsDir = '~/.vim/bundle/vim-ultisnippets/UltiSnips'
 
 " react
-let g:jsx_ext_required = 0 " Allow JSX in normal JS files
+let g:jsx_ext_required = 1 " Allow JSX in normal JS files
 
-" syntastic
-let g:syntastic_javascript_checkers = ['jsxhint']
-let g:syntastic_javascript_jsxhint_exec = 'jsx-jshint-wrapper'
-let g:syntastic_always_populate_loc_list = 0
-let g:syntastic_auto_loc_list = 0
-let g:syntastic_check_on_open = 0
-let g:syntastic_check_on_wq = 0
 
 "easytags
+let g:easytags_async = 1
 let g:easytags_auto_highlight = 0
 " autocmd BufWritePost * exe ":UpdateTags"
-
-"airline
-if !exists('g:airline_symbols')
-    let g:airline_symbols = {}
-  endif
-let g:airline_powerline_fonts = 1
-let g:airline_symbols.space = "\ua0"
-let g:airline_theme='lucius'
+set tags=./tags;
+let g:easytags_dynamic_files = 1
+let g:easytags_auto_highlight = 0
+let g:easytags_languages = {
+            \   'javascript': {
+            \     'cmd': "jsctags",
+            \	    'args': [],
+            \	    'fileoutput_opt': '-f',
+            \	    'stdout_opt': '-f-',
+            \	    'recurse_flag': '-R'
+            \   }
+            \}
+"find . -type f -iregex ".*\.js$" -exec jsctags {} -f \; | sed '/^$/d' | sort > tags
 
 " function! VimuxSlime()
 "   call VimuxSendText(@v)
 "   call VimuxSendKeys("Enter")
 "  endfunction
 
-" send visual to tmux
-vmap <LocalLeader>vs "vy :call VimuxSendText(@v)<CR>
+
+"go
+let g:godef_same_file_in_same_window=1
+
+
+" javascript
+" command Jest Dispatch jest
+let g:javascript_plugin_jsdoc = 1
+let g:javascript_plugin_ngdoc = 1
+let g:javascript_plugin_flow = 1
+set foldmethod=syntax
+autocmd User Node if &filetype == "javascript" | setlocal expandtab | endif
+" vim-jsx-pretty
+let g:vim_jsx_pretty_colorful_config = 0
+let g:vim_jsx_pretty_enable_jsx_highlight = 1
+
+let g:deoplete#enable_at_startup = 1
+let g:deoplete#enable_smart_case = 1
+" let g:deoplete#enable_camel_case = 1
+let g:deoplete#enable_ignore_case = 1
+
+call deoplete#custom#set('_', 'matchers', ['matcher_full_fuzzy'])
+call deoplete#custom#set('ultisnips', 'matchers', ['matcher_full_fuzzy'])
+call deoplete#custom#set('ultisnips', 'rank', 1000)
+
+let g:deoplete#omni_patterns = {}
+let g:deoplete#omni_patterns.javascript = '[^. *\t]\.\w*'
+let g:echodoc_enable_at_startup = 1
+autocmd CompleteDone * pclose!
+
+" Don't map any tabs, I'll do it later
+let g:UltiSnipsExpandTrigger = '<NOP>'
+let g:UltiSnipsJumpForwardTrigger = '<NOP>'
+let g:UltiSnipsJumpBackwardTrigger = '<NOP>'
+let g:SuperTabMappingForward = '<NOP>'
+let g:SuperTabMappingBackward = '<NOP>'
+let g:SuperTabMappingTabLiteral = 'C-TAB>'
+" Don't unmap my mappings
+let g:UltiSnipsMappingsToIgnore = [ "SmartTab", "SmartShiftTab" ]
+
+" Make <CR> smart
+let g:ulti_expand_res = 0
+function! Ulti_ExpandOrEnter()
+  " First try to expand a snippet
+  call UltiSnips#ExpandSnippet()
+  if g:ulti_expand_res
+    " if successful, just return
+    return ''
+  elseif pumvisible()
+    " if in completion menu - just close it and leave the cursor at the
+    " end of the completion
+    return deoplete#mappings#close_popup()
+  else
+    " otherwise, just do an "enter"
+    return "\<return>"
+  endif
+endfunction
+inoremap <return> <C-R>=Ulti_ExpandOrEnter()<CR>
+
+" Enable tabbing and shift-tabbing through list of results
+function! g:SmartTab()
+  if pumvisible()
+    return SuperTab("n")
+  else
+    call UltiSnips#JumpForwards()
+    if g:ulti_jump_forwards_res == 0
+      return SuperTab("n")
+    endif
+    return ''
+  endif
+endfunction
+inoremap <silent> <tab> <C-R>=g:SmartTab()<cr>
+snoremap <silent> <tab> <Esc>:call g:SmartTab()<cr>
+
+
+function! g:SmartShiftTab()
+  if pumvisible()
+    return SuperTab("p")
+  else
+    call UltiSnips#JumpBackwards()
+    if g:ulti_jump_backwards_res == 0
+      return SuperTab("p")
+    endif
+    return ''
+  endif
+endfunction
+inoremap <silent> <s-tab> <C-R>=g:SmartShiftTab()<cr>
+snoremap <silent> <s-tab> <Esc>:call g:SmartShiftTab()<cr>
+
+
+let g:enable_bold_font = 1
+set background=dark
+colorscheme material-theme
 
