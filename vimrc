@@ -69,14 +69,14 @@ Plug 'tpope/vim-bundler', { 'for': ['ruby', 'rails'] }
 Plug 'thoughtbot/vim-rspec', { 'for': ['ruby', 'rails']}
 Plug 'vim-ruby/vim-ruby', { 'for': ['ruby', 'rails']}
 Plug 'kchmck/vim-coffee-script', { 'for': ['ruby', 'rails', 'coffee']}
-Plug 'alexgenco/neovim-ruby'
+Plug 'alexgenco/neovim-ruby', { 'for': ['ruby', 'rails']}
 "javascript
 Plug 'jaxbot/syntastic-react', { 'for': ['javascript', 'javascript.jsx']}
-Plug 'pangloss/vim-javascript'
-Plug 'maxmellon/vim-jsx-pretty'
-Plug 'elzr/vim-json'
-Plug 'moll/vim-node'
-Plug 'flowtype/vim-flow'
+Plug 'pangloss/vim-javascript', { 'for': ['javascript', 'javascript.jsx']}
+Plug 'maxmellon/vim-jsx-pretty', { 'for': ['javascript', 'javascript.jsx']}
+Plug 'elzr/vim-json', { 'for': ['javascript', 'javascript.jsx']}
+Plug 'moll/vim-node' 
+Plug 'flowtype/vim-flow', { 'for': ['javascript', 'javascript.jsx']}
 
 " tags
 Plug 'majutsushi/tagbar'
@@ -343,7 +343,7 @@ if executable('rg')
     " --color: Search color options
     command! -bang -nargs=* Find call fzf#vim#grep('rg --column --line-number --no-heading --fixed-strings --ignore-case --no-ignore --hidden --follow --glob "!.git/*" --color "always" '.shellescape(<q-args>), 1, <bang>0)
     set grepprg=rg\ --vimgrep
-    let g:ctrlp_user_command = 'rg %s --files --hidden --color=never --glob "!.git/*"'
+    let g:ctrlp_user_command = 'rg %s --files --hidden --ignore-case --color=never --glob "!.git/*"'
     let g:ctrlp_use_caching = 0
 
 elseif  executable('ag')
@@ -507,3 +507,11 @@ let g:enable_bold_font = 1
 set background=dark
 colorscheme material-theme
 
+
+set termguicolors
+
+" If you use vim inside tmux, see
+" https://github.com/vim/vim/issues/993
+" " set Vim-specific sequences for RGB colors
+let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
+let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
